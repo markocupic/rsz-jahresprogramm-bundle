@@ -1,0 +1,133 @@
+<?php
+$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicrszjahresprogramm/jquery.tablesorter.min.js';
+$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicrszjahresprogramm/jahresprogramm.js';
+?>
+
+<div class="mod_jahresprogramm <?php echo $this->class; ?>"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?>
+<<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+<?php endif; ?>
+
+<a href="<?= $this->downloadUrl ?>" title="Jahresprogramm herunterladen">Jahresprogramm downloaden</a>
+
+<h1 class="ce_headline">Nächste Anlässe</h1>
+
+    <div class="table-responsive">
+     <table class="table table-striped" id="table_next_events">
+       <thead>
+         <tr>
+            <th class="col_0"><span class="fa fa-clock-o"></span></th>
+            <th class="col_1">Datum</th>
+            <th class="col_2">Art</th>
+            <th class="col_3">Ort</th>
+             <th class="col_4">An-/Abmeldung bis</th>
+             <th class="col_5">Trainer</th>
+            <th class="col_6">Kommentar</th>
+         </tr>
+       </thead>
+       <tbody>
+          <?php foreach ($this->arrNextEvent as $Anlass): ?>
+                <tr>
+                    <td class="col_0"><?=  ($Anlass["tstamp_end_date"] < time() ? '&#10004;' : '&nbsp;') ?></td>
+                    <td class="col_1"><?= $Anlass['start_date'] ?></td>
+                    <td class="col_2"><a href="<?= $Anlass['jumpTo'] ?>"><?= $Anlass['art'] ?></a></td>
+                    <td class="col_3"><?= $Anlass['ort'] ?></td>
+                    <td class="col_4"><?= $Anlass['signInStop'] ?></td>
+                    <td class="col_5"><?= $Anlass['trainer'] ?></td>
+                    <td class="col_6"><?= $Anlass['kommentar'] ?></td>
+                </tr>
+             <?php endforeach; ?>
+       </tbody>
+     </table>
+    </div>
+
+    <br><br>
+
+    <h1 class="ce_headline">Alle Events</h1>
+    <div class="row">
+        <div class="col-4">
+            <div class="btn-group" style="position:relative">
+                <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="fa fa-table"></span>
+                </button>
+                <div class="dropdown-menu jahresprogramm-dropdown-btn">
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox" id="checkbox-col_1" value="col_1">
+                        Datum
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox" id="checkbox-col_2" value="col_2">
+                        Art
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox" id="checkbox-col_3" value="col_3">
+                        Ort
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_4" value="col_4">
+                            Anmeldung
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox" id="checkbox-col_5" value="col_5">
+                        Trainer
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox" id="checkbox-col_6" value="col_6">
+                        Kommentar
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-8">
+           <div class="input-group">
+             <input type="text" id="jahresprogramm_search_input" class="form-control" placeholder="Suchbegriffe" aria-describedby="basic-addon2">
+             <span class="input-group-addon"><i class="fa fa-search"></i></span>
+           </div>
+        </div>
+    </div>
+
+    <br><br>
+
+     <div class="table-responsive">
+         <table class="table all-events table-striped tablesorter" id="table_all_events">
+           <thead>
+             <tr>
+                <th class="col_0"><span class="fa fa-clock-o"></span></th>
+                <th class="col_1">Datum</th>
+                <th class="col_2">Art</th>
+                <th class="col_3">Ort</th>
+                <th class="col_4">An-/Abmeldung bis</th>
+                <th class="col_5">Trainer</th>
+                <th class="col_6">Kommentar</th>
+             </tr>
+           </thead>
+           <tbody>
+              <?php foreach ($this->Jahresprogramm as $Anlass): ?>
+                    <tr>
+                        <td class="col_0"><?=  ($Anlass["tstamp_end_date"] < time() ? '&#10004;' : '&nbsp;') ?></td>
+                        <td class="col_1"><?= $Anlass['start_date'] ?></td>
+                        <td class="col_2"><a href="<?= $Anlass['jumpTo'] ?>"><?= $Anlass['art'] ?></a></td>
+                        <td class="col_3"><?= $Anlass['ort'] ?></td>
+                        <td class="col_4"><?= $Anlass['signInStop'] ?></td>
+                        <td class="col_5"><?= $Anlass['trainer'] ?></td>
+                        <td class="col_6"><?= $Anlass['kommentar'] ?></td>
+                    </tr>
+                 <?php endforeach; ?>
+           </tbody>
+         </table>
+    </div>
+
+</div>
