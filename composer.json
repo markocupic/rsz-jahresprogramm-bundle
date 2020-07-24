@@ -1,11 +1,11 @@
 {
   "name": "markocupic/rsz-jahresprogramm-bundle",
-  "description": "Jahresprogramm für Regionalkontrolle Sportklettern Zentralschweiz",
+  "description": "Jahresprogramm für Regionalzentrum Sportklettern Zentralschweiz",
   "keywords": [
     "contao",
-    "bundle",
-    "tag 1",
-    "tag 2"
+    "RSZ",
+    "Regionalzentrum Sportklettern Zentralschweiz",
+    "Jahresprogramm"
   ],
   "type": "contao-bundle",
   "license": "MIT",
