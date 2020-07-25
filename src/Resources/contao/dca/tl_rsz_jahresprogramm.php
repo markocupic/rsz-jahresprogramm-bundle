@@ -320,15 +320,9 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
     ]
 ];
-<<<<<<< HEAD
 
 /**
  * Class tl_rsz_jahresprogramm
-=======
-/**
- * @todo remove classname mess
- * @todo remote endete mess (Palette manipulator) 
->>>>>>> 594c5dc3c12ee699b573d258a6e1d50d3f2d0946
  */
 class tl_rsz_jahresprogramm extends Backend
 {
@@ -497,7 +491,6 @@ class tl_rsz_jahresprogramm extends Backend
     /**
      * Onload callback
      * Important for tl_rsz_jahresprogramm_participant
-     *@todo check phpdoc
      */
     public function insertUniqueId()
     {
@@ -516,7 +509,8 @@ class tl_rsz_jahresprogramm extends Backend
      */
     public function checkReferantialIntegrity()
     {
-        $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm")->execute();
+        //Wenn für das End-Datum nichts angegeben wird, wird dafür automatisch das Start-Datum eingetragen
+        $objDb = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm")->execute();
         while ($objDb->next())
         {
             $arrUuid[] = $objDb->uniqueId;
