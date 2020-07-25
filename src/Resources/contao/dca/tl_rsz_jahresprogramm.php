@@ -346,7 +346,10 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
     ]
 ];
-
+/**
+ * @todo remove classname mess
+ * @todo remote endete mess (Palette manipulator) 
+ */
 class tl_rsz_jahresprogramm extends Backend
 {
 
