@@ -165,11 +165,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'default'   => time(),
             'search'    => true,
             'sorting'   => true,
-            'eval'      => [
-                'mandatory'  => true,
-                'datepicker' => true,
-                'rgxp'       => 'date',
-            ],
+            'eval'      => ['mandatory' => true, 'datepicker' => true, 'rgxp' => 'date'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
         'end_date'             => [
@@ -178,11 +174,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'default'   => time(),
             'search'    => true,
             'sorting'   => true,
-            'eval'      => [
-                'mandatory'  => true,
-                'datepicker' => true,
-                'rgxp'       => 'date',
-            ],
+            'eval'      => ['mandatory' => true, 'datepicker' => true, 'rgxp' => 'date'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
         'art'                  => [
@@ -192,11 +184,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'includeBlankOption' => true,
-                'mandatory'          => true,
-                'maxlength'          => 64,
-            ],
+            'eval'      => ['includeBlankOption' => true, 'mandatory' => true, 'maxlength' => 64],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
         'trainer'              => [
@@ -205,10 +193,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'mandatory' => false,
-                'maxlength' => 64,
-            ],
+            'eval'      => ['mandatory' => false, 'maxlength' => 64],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'teilnehmer'           => [
@@ -218,14 +203,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'includeBlankOption' => true,
-                'chosen'             => true,
-                'multiple'           => true,
-                'mandatory'          => false,
-                'maxlength'          => 255,
-                'csv'                => ',',
-            ],
+            'eval'      => ['includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'mandatory' => false, 'maxlength' => 255, 'csv' => ','],
             'sql'       => "varchar(512) NOT NULL default ''",
         ],
         'ort'                  => [
@@ -234,10 +212,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'mandatory' => false,
-                'maxlength' => 64,
-            ],
+            'eval'      => ['mandatory' => false, 'maxlength' => 64],
             'sql'       => "text NOT NULL",
         ],
         'zeit'                 => [
@@ -245,10 +220,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'eval'      => [
-                'mandatory' => false,
-                'maxlength' => 13,
-            ],
+            'eval'      => ['mandatory' => false, 'maxlength' => 13],
             'sql'       => "text NOT NULL",
         ],
         'phase'                => [
@@ -257,10 +229,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'mandatory' => false,
-                'maxlength' => 64,
-            ],
+            'eval'      => ['mandatory' => false, 'maxlength' => 64],
             'sql'       => "text NOT NULL",
         ],
         'trainingsstunden'     => [
@@ -270,10 +239,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'mandatory' => false,
-                'maxlength' => 2,
-            ],
+            'eval'      => ['mandatory' => false, 'maxlength' => 2],
             'sql'       => "varchar(3) NOT NULL default ''",
         ],
         'wettkampfform'        => [
@@ -283,11 +249,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'includeBlankOption' => true,
-                'mandatory'          => false,
-                'maxlength'          => 64,
-            ],
+            'eval'      => ['includeBlankOption' => true, 'mandatory' => false, 'maxlength' => 64],
             'sql'       => "text NOT NULL",
         ],
         'treffpunkt'           => [
@@ -296,10 +258,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'eval'      => [
-                'mandatory' => false,
-                'maxlength' => 64,
-            ],
+            'eval'      => ['mandatory' => false, 'maxlength' => 64],
             'sql'       => "text NOT NULL",
         ],
         'kommentar'            => [
@@ -308,6 +267,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'sorting'   => true,
             'filter'    => true,
             'inputType' => 'textarea',
+            'eval'      => [],
             'sql'       => "text NOT NULL",
         ],
         'kw'                   => [
@@ -322,7 +282,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
 ];
 
 /**
- * Class tl_rsz_jahresprogramm 
+ * Class tl_rsz_jahresprogramm
  */
 class tl_rsz_jahresprogramm extends Backend
 {
@@ -398,23 +358,34 @@ class tl_rsz_jahresprogramm extends Backend
         // Merging the arrays
         $arrRows = array_merge($arrHeadline, $arrAutoSignIn, $arrSignIn);
 
-        // Purge temporary folder
-        $objFolder = new \Contao\Folder('files/tmp');
-        $objFolder->purge();
-
         // Create temporary file
-        $tmp = 'files/tmp/rsz-event-teilnehmerliste_event-' . \Contao\Date::parse('Ymd', $objEvent->start_date) . '.csv';
-        new \Contao\Folder('files/tmp');
+        $tmp = 'system/tmp/rsz-event-teilnehmerliste_event-' . \Contao\Date::parse('Ymd', $objEvent->start_date) . '.csv';
         $objFile = new \Contao\File($tmp);
-        $objFile->write(''); // It is necessary to write en empty string into the file. Otherwise the file class return no handle.
-        foreach ($arrRows as $row)
-        {
-            fputcsv($objFile->handle, $row, ";");
-        }
-        $objFile->close();
+        $objFile->write('');
 
-        // Send file to browser
-        \Controller::sendFileToBrowser($tmp);
+        // Convert special chars
+        $arrFinal = [];
+        foreach ($arrRows as $arrRow)
+        {
+            $arrLine = array_map(function ($v) {
+                return html_entity_decode(htmlspecialchars_decode($v));
+            }, $arrRow);
+            $arrFinal[] = $arrLine;
+        }
+
+        // Load the CSV document from a string
+        $csv = \League\Csv\Writer::createFromString('');
+        $csv->setOutputBOM(\League\Csv\Reader::BOM_UTF8);
+        $csv->setDelimiter(';');
+        $csv->setEnclosure('"');
+
+        // Insert all the records
+        $csv->insertAll($arrFinal);
+
+        // Write content into file
+        $objFile->write($csv);
+        $objFile->close();
+        $objFile->sendToBrowser($objFile->name);
     }
 
     /**
