@@ -359,7 +359,7 @@ class tl_rsz_jahresprogramm extends Backend
         $arrRows = array_merge($arrHeadline, $arrAutoSignIn, $arrSignIn);
 
         // Create temporary file
-        $tmp = 'system/tmp/rsz-event-teilnehmerliste_event-' . \Contao\Date::parse('Ymd', $objEvent->start_date) . '.csv';
+        $tmp = 'system/tmp/rsz-event-teilnehmerliste_event-' . \Contao\Date::parse('Y-m-d', $objEvent->start_date) . '.csv';
         $objFile = new \Contao\File($tmp);
         $objFile->write('');
 
@@ -440,7 +440,7 @@ class tl_rsz_jahresprogramm extends Backend
                 return;
             }
             $setKw = $this->Database->prepare("UPDATE tl_rsz_jahresprogramm SET kw = ? WHERE id = ?");
-            $setKw->execute(date("W", $row->start_date), $row->id);
+            $setKw->execute(\Contao\Date::parse("W", $row->start_date), $row->id);
         }
     }
 
@@ -497,7 +497,7 @@ class tl_rsz_jahresprogramm extends Backend
      */
     public function labelCallback($row, $label)
     {
-        $label = str_replace('#datum#', date('Y-m-d', (int) $row['start_date']), $label);
+        $label = str_replace('#datum#', \Contao\Date::parse('Y-m-d', (int) $row['start_date']), $label);
 
         $this->Database->prepare('SELECT start_date,trainers FROM tl_rsz_praesenzkontrolle WHERE id=?')->execute($row['id']);
 
