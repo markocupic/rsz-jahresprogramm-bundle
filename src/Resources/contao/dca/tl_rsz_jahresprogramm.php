@@ -15,50 +15,45 @@
 $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
 
     // Config
-    'config'            => [
-        'dataContainer'    => 'Table',
-        'enableVersioning' => true,
-        'sql'              => [
+    'config'      => [
+        'dataContainer'     => 'Table',
+        'enableVersioning'  => true,
+        'sql'               => [
             'keys' => [
                 'id' => 'primary'
             ]
         ],
-    ],
-    'onload_callback'   => [
-        [
-            'tl_rsz_jahresprogramm',
-            'setUpPalettes',
+        'onload_callback'   => [
+            [
+                'tl_rsz_jahresprogramm',
+                'setDca',
+            ],
+            [
+                'tl_rsz_jahresprogramm',
+                'setKalenderwocheToDb',
+            ],
+            [
+                'tl_rsz_jahresprogramm',
+                'adjustEndDate',
+            ],
+            [
+                'tl_rsz_jahresprogramm',
+                'insertUniqueId',
+            ],
+            [
+                'tl_rsz_jahresprogramm',
+                'checkReferantialIntegrity',
+            ],
         ],
-        [
-            'tl_rsz_jahresprogramm',
-            'setKalenderwocheToDb',
+        'ondelete_callback' => [
+            [
+                'tl_rsz_jahresprogramm',
+                'delPraesenzkontrolle',
+            ],
         ],
-        [
-            'tl_rsz_jahresprogramm',
-            'hideEndDateWhenEmpty',
-        ],
-        [
-            'tl_rsz_jahresprogramm',
-            'insertUniqueId',
-        ],
-        [
-            'tl_rsz_jahresprogramm',
-            'checkReferantialIntegrity',
-        ],
-    ],
-    'ondelete_callback' => [
-        [
-            'tl_rsz_jahresprogramm',
-            'ondeleteCb_delPraesenzkontrolle',
-        ],
-    ],
-    'edit'              => [
-        'buttons_callback' => [
-            //['tl_rsz_jahresprogramm', 'buttonsCallback']
-        ]
     ],
     // List
-    'list'              => [
+    'list'        => [
         'sorting'           => [
             'mode'            => 1,
             'fields'          => ['start_date'],
@@ -119,40 +114,35 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
     ],
     // Palettes
-    'palettes'          => [
+    'palettes'    => [
         '__selector__' => ['autoSignIn'],
-        'default'      => '{Zeit}, kw, start_date, end_date; {Beschreibung},art, ort, zeit, teilnehmer, trainer; {erweiterte Angaben:hide}, wettkampfform, phase, trainingsstunden, kommentar;{registration_legend},autoSignIn;',
+        'default'      => '{Zeit},kw,start_date,end_date;{Beschreibung},art,ort,zeit,teilnehmer,trainer;{erweiterte Angaben:hide},wettkampfform,phase,trainingsstunden,kommentar;{registration_legend},autoSignIn',
     ],
-    'subpalettes'       => [
+    'subpalettes' => [
         'autoSignIn' => 'registrationStop,autoSignInKategories',
     ],
     // Fields
-    'fields'            => [
-
-        'id'       => [
-            'label'  => ['ID'],
+    'fields'      => [
+        'id'                   => [
             'search' => true,
             'sql'    => "int(10) unsigned NOT NULL auto_increment",
         ],
         // Important: foreignkey for tl_jahreprogramm_participant
-        'uniqueId' => [
+        'uniqueId'             => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['uniqueId'],
             'inputType' => 'text',
             'eval'      => ['readonly' => true, 'doNotShow' => true, 'doNotCopy' => true, 'unique' => true],
             'sql'       => "varchar(32) NOT NULL default ''",
         ],
-
         'registrationStop'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['registrationStop'],
             'exclude'   => true,
             'inputType' => 'text',
+            'default'   => time(),
             'eval'      => ['rgxp' => 'date', 'mandatory' => true, 'datepicker' => true, 'tl_class' => 'clr wizard'],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
         'autoSignIn'           => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['autoSignIn'],
             'inputType' => 'checkbox',
             'search'    => true,
             'sorting'   => true,
@@ -160,10 +150,9 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'sql'       => "varchar(1) NOT NULL default ''",
         ],
         'autoSignInKategories' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['autoSignInKategories'],
             'exclude'   => true,
             'inputType' => 'select',
-            'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_kategorie']),
+            'options'   => explode(',', \Contao\Config::get('mcupic_be_benutzerverwaltung_kategorie')),
             'eval'      => ['multiple' => true, 'chosen' => true, 'mandatory' => true, 'tl_class' => 'clr'],
             'sql'       => "varchar(1020) NOT NULL default ''",
         ],
@@ -172,7 +161,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'start_date'           => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['start_date'],
             'inputType' => 'text',
             'default'   => time(),
             'search'    => true,
@@ -186,7 +174,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'end_date'             => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['end_date'],
             'inputType' => 'text',
             'default'   => time(),
             'search'    => true,
@@ -200,9 +187,8 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'art'                  => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['art'],
             'inputType' => 'select',
-            'options'   => explode(',', $GLOBALS['TL_CONFIG']['tl_rsz_jahresprogramm_art']),
+            'options'   => explode(',', \Contao\Config::get('tl_rsz_jahresprogramm_art')),
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
@@ -215,7 +201,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'trainer'              => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['trainer'],
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
@@ -228,9 +213,8 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'teilnehmer'           => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['teilnehmer'],
             'inputType' => 'select',
-            'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainingsgruppe']),
+            'options'   => explode(',', \Contao\Config::get('mcupic_be_benutzerverwaltung_trainingsgruppe')),
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
@@ -246,7 +230,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'ort'                  => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['ort'],
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
@@ -259,7 +242,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'zeit'                 => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['zeit'],
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
@@ -268,11 +250,9 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
                 'maxlength' => 13,
             ],
             'sql'       => "text NOT NULL",
-
         ],
         'phase'                => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['phase'],
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
@@ -282,13 +262,11 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
                 'maxlength' => 64,
             ],
             'sql'       => "text NOT NULL",
-
         ],
         'trainingsstunden'     => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['trainingsstunden'],
             'inputType' => 'select',
-            'options'   => explode(',', $GLOBALS['TL_CONFIG']['tl_rsz_jahresprogramm_trainingsstunden']),
+            'options'   => explode(',', \Contao\Config::get('tl_jahresprogramm_trainingsstunden')),
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
@@ -300,9 +278,8 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'wettkampfform'        => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['wettkampfform'],
             'inputType' => 'select',
-            'options'   => explode(',', $GLOBALS['TL_CONFIG']['tl_rsz_jahresprogramm_wettkampfform']),
+            'options'   => explode(',', \Contao\Config::get('tl_jahresprogramm_wettkampfform')),
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
@@ -315,7 +292,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         ],
         'treffpunkt'           => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['treffpunkt'],
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
@@ -331,13 +307,11 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'filter'    => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['kommentar'],
             'inputType' => 'textarea',
             'sql'       => "text NOT NULL",
         ],
         'kw'                   => [
             'exclude'   => true,
-            'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm']['kw'],
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
@@ -347,109 +321,107 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
     ]
 ];
 
+/**
+ * Class tl_rsz_jahresprogramm
+ */
 class tl_rsz_jahresprogramm extends Backend
 {
 
-    const TEMPORARY_FOLDER = 'system/tmp';
-
+    /**
+     * tl_rsz_jahresprogramm constructor.
+     * @throws Exception
+     */
     public function __construct()
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
 
-        // datum to string
-        $sql = $this->Database->execute("SELECT * FROM tl_rsz_jahresprogramm");
-        while ($sql->next())
-        {
-            if (strstr($sql->end_date, '.') && strstr($sql->start_date, '.'))
-            {
-                $start = mktime(0, 0, 0, substr($sql->start_date, 3, 2), substr($sql->start_date, 0, 2), substr($sql->start_date, 6, 4));
-                $end = mktime(0, 0, 0, substr($sql->end_date, 3, 2), substr($sql->end_date, 0, 2), substr($sql->end_date, 6, 4));
-                $set = [
-                    "start_date" => $start,
-                    "end_date"   => $end,
-                ];
-                $sqlUpd = $this->Database->prepare("UPDATE tl_rsz_jahresprogramm %s WHERE id=?")->set($set)->execute($sql->id);
-            }
-        }
-
         // Download the participant sheet as csv file **Dez 2016**
-        if (\Input::get('downloadParticipantSheet'))
+        if (\Contao\Input::get('downloadParticipantSheet'))
         {
-            $objEvent = \Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel::findByPk(\Input::get('id'));
-            if ($objEvent === null)
-            {
-                die('Event not found!');
-            }
-
-            $arrHeadline = [];
-            $arrHeadline['headline'] = ['Name', 'nimmt teil', 'nimmt nicht teil', 'Grund fuer Nichtteilnahme', 'Zeitstempel'];
-
-            // Auto Sign In
-            $arrAutoSignIn = [];
-            if ($objEvent->autoSignIn)
-            {
-                $arrKategories = deserialize($objEvent->autoSignInKategories, true);
-                $objUser = $this->Database->prepare("SELECT * FROM tl_user ORDER BY kategorie")->execute();
-                while ($objUser->next())
-                {
-                    $arrFunktion = deserialize($objUser->funktion, true);
-                    if (in_array('Athlet', $arrFunktion))
-                    {
-                        if (in_array($objUser->kategorie, $arrKategories))
-                        {
-                            $arrAutoSignIn[$objUser->username][] = utf8_decode($objUser->name);
-                            $arrAutoSignIn[$objUser->username][] = '1';
-                            $arrAutoSignIn[$objUser->username][] = '';
-                            $arrAutoSignIn[$objUser->username][] = '';
-                            $arrAutoSignIn[$objUser->username][] = '';
-                        }
-                    }
-                }
-            }
-
-            // Manual registration via Frontend Module "Jahresplanung"
-            $arrSignIn = [];
-            $objParticipant = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm_participant WHERE tl_rsz_jahresprogramm_participant.uniquePid=(SELECT uniqueId FROM tl_rsz_jahresprogramm WHERE tl_rsz_jahresprogramm.id=?)")
-                ->execute(\Input::get('id'));
-            while ($objParticipant->next())
-            {
-                $item = [];
-                $item[] = utf8_decode(\MemberModel::findByPk($objParticipant->pid)->firstname) . ' ' . utf8_decode(\MemberModel::findByPk($objParticipant->pid)->lastname);
-                $item[] = $objParticipant->signedIn;
-                $item[] = $objParticipant->signedOff;
-                $item[] = utf8_decode(str_replace(["\r\n", "\r", "\n"], " ", $objParticipant->signOffReason));
-                $item[] = \Date::parse('Y-m-d', $objParticipant->tstamp);
-                $arrSignIn[\MemberModel::findByPk($objParticipant->pid)->username] = $item;
-            }
-
-            // Merging the arrays
-            $arrRows = array_merge($arrHeadline, $arrAutoSignIn, $arrSignIn);
-
-            // Purge temporary folder
-            $objFolder = new \Folder('files/tmp');
-            $objFolder->purge();
-
-            // Create temporary file
-            $tmp = 'files/tmp/rsz-event-teilnehmerliste_event-' . \Date::parse('Ymd', $objEvent->start_date) . '.csv';
-            new \Contao\Folder('files/tmp');
-            $objFile = new \Contao\File($tmp);
-            $objFile->write(''); // It is necessary to write en empty string into the file. Otherwise the file class return no handle.
-            foreach ($arrRows as $row)
-            {
-                fputcsv($objFile->handle, $row, ";");
-            }
-            $objFile->close();
-
-            // Send file to browser
-            \Controller::sendFileToBrowser($tmp);
+            $this->downloadParticipantSheet();
         }
     }
 
     /**
+     * @throws Exception
+     */
+    protected function downloadParticipantSheet()
+    {
+        $objEvent = \Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel::findByPk(\Contao\Input::get('id'));
+        if ($objEvent === null)
+        {
+            die('Event not found!');
+        }
+
+        $arrHeadline = [];
+        $arrHeadline['headline'] = ['Name', 'nimmt teil', 'nimmt nicht teil', 'Grund fuer Nichtteilnahme', 'Zeitstempel'];
+
+        // Auto Sign In
+        $arrAutoSignIn = [];
+        if ($objEvent->autoSignIn)
+        {
+            $arrKategories = \Contao\StringUtil::deserialize($objEvent->autoSignInKategories, true);
+            $objUser = $this->Database->prepare("SELECT * FROM tl_user ORDER BY kategorie")->execute();
+            while ($objUser->next())
+            {
+                $arrFunktion = \Contao\StringUtil::deserialize($objUser->funktion, true);
+                if (in_array('Athlet', $arrFunktion))
+                {
+                    if (in_array($objUser->kategorie, $arrKategories))
+                    {
+                        $arrAutoSignIn[$objUser->username][] = utf8_decode($objUser->name);
+                        $arrAutoSignIn[$objUser->username][] = '1';
+                        $arrAutoSignIn[$objUser->username][] = '';
+                        $arrAutoSignIn[$objUser->username][] = '';
+                        $arrAutoSignIn[$objUser->username][] = '';
+                    }
+                }
+            }
+        }
+
+        // Manual registration via Frontend Module "Jahresplanung"
+        $arrSignIn = [];
+        $objParticipant = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm_participant WHERE tl_rsz_jahresprogramm_participant.uniquePid=(SELECT uniqueId FROM tl_rsz_jahresprogramm WHERE tl_rsz_jahresprogramm.id=?)")
+            ->execute(\Contao\Input::get('id'));
+        while ($objParticipant->next())
+        {
+            $item = [];
+            $item[] = utf8_decode(\Contao\MemberModel::findByPk($objParticipant->pid)->firstname) . ' ' . utf8_decode(\Contao\MemberModel::findByPk($objParticipant->pid)->lastname);
+            $item[] = $objParticipant->signedIn;
+            $item[] = $objParticipant->signedOff;
+            $item[] = utf8_decode(str_replace(["\r\n", "\r", "\n"], " ", $objParticipant->signOffReason));
+            $item[] = \Contao\Date::parse('Y-m-d', $objParticipant->tstamp);
+            $arrSignIn[\Contao\MemberModel::findByPk($objParticipant->pid)->username] = $item;
+        }
+
+        // Merging the arrays
+        $arrRows = array_merge($arrHeadline, $arrAutoSignIn, $arrSignIn);
+
+        // Purge temporary folder
+        $objFolder = new \Contao\Folder('files/tmp');
+        $objFolder->purge();
+
+        // Create temporary file
+        $tmp = 'files/tmp/rsz-event-teilnehmerliste_event-' . \Contao\Date::parse('Ymd', $objEvent->start_date) . '.csv';
+        new \Contao\Folder('files/tmp');
+        $objFile = new \Contao\File($tmp);
+        $objFile->write(''); // It is necessary to write en empty string into the file. Otherwise the file class return no handle.
+        foreach ($arrRows as $row)
+        {
+            fputcsv($objFile->handle, $row, ";");
+        }
+        $objFile->close();
+
+        // Send file to browser
+        \Controller::sendFileToBrowser($tmp);
+    }
+
+    /**
+     * Ondelete callback
      * @param DataContainer $dc
      */
-    public function ondeleteCb_delPraesenzkontrolle(DataContainer $dc)
+    public function delPraesenzkontrolle(DataContainer $dc)
     {
         $objDb = $this->Database->prepare('SELECT * FROM tl_rsz_praesenzkontrolle WHERE pid=?')->execute($dc->id);
         while ($objDb->next())
@@ -463,9 +435,10 @@ class tl_rsz_jahresprogramm extends Backend
     }
 
     /**
-     *
+     * Onload callback
+     * Manipulate dca
      */
-    public function setUpPalettes()
+    public function setDca()
     {
         /** Do some restrictions to default users */
         if (!$this->User->isAdmin && !$this->User->isMemberOf(11))
@@ -483,33 +456,8 @@ class tl_rsz_jahresprogramm extends Backend
     }
 
     /**
-     * @param $row
-     * @param $label
-     * @return mixed
-     */
-    public function labelCallback($row, $label)
-    {
-        $label = str_replace('#datum#', date('Y-m-d', (int) $row['start_date']), $label);
-
-        $mysql = $this->Database->prepare('SELECT start_date,trainers FROM tl_rsz_praesenzkontrolle WHERE id=?')->execute($row['id']);
-
-        if (time() > $row['start_date'])
-        {
-            $status = '<div style="display:inline; padding-right:4px;"><img src="bundles/markocupicrszjahresprogramm/check.svg" alt="history" title="abgelaufen"></div>';
-        }
-        else
-        {
-            $status = '<div style="display:inline; padding-right:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
-        }
-        $label = str_replace('#STATUS#', $status, $label);
-
-        $label = str_replace('#signIn#', $row['autoSignIn'] ? 'Anmeldung bis: ' . \Date('Y-m-d', $row['registrationStop']) : '', $label);
-
-        return $label;
-    }
-
-    /**
-     * erstellt anhand des startDatums in der db die Kalenderwoche in der der Anlass stattfindet
+     * Onload callback
+     * Erstellt anhand des startDatums die Kalenderwoche des Daatensatzes
      */
     public function setKalenderwocheToDb()
     {
@@ -525,33 +473,28 @@ class tl_rsz_jahresprogramm extends Backend
         }
     }
 
-    public function hideEndDateWhenEmpty(DataContainer $dc)
+    /**
+     * Onload callback
+     * @param DataContainer $dc
+     */
+    public function adjustEndDate(DataContainer $dc)
     {
         //Wenn für das End-Datum nichts angegeben wird, wird dafür automatisch das Start-Datum eingetragen
-        $date = $this->Database->prepare("SELECT id, start_date FROM tl_rsz_jahresprogramm WHERE start_date!='' AND end_date=''")->execute();
-        while ($row = $date->next())
+        $date = $this->Database->prepare("SELECT id, start_date FROM tl_rsz_jahresprogramm WHERE (start_date != ? AND end_date=?) OR end_date < start_date")->execute(0, 0);
+        while ($date->next())
         {
             $end_date = $this->Database->prepare("UPDATE tl_rsz_jahresprogramm SET end_date = ? WHERE id = ?");
-            $end_date->execute($row->start_date, $row->id);
-        }
-        //Wenn end-datum leer ist, wird es ausgeblendet, das ist der Fall beim Erstellen neuer Anlässe
-        if ($dc->id != "")
-        {
-            $date = $this->Database->prepare("SELECT start_date FROM tl_rsz_jahresprogramm WHERE id = ?")->execute($dc->id);
-            $date->fetchAssoc();
-            if ($date->start_date == "")
-            {
-                $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm']['palettes']['default'] = 'start_date, art, ort, wettkampfform; zeit, trainer; kommentar; phase, trainingsstunden';
-            }
+            $end_date->execute($date->start_date, $date->id);
         }
     }
 
     /**
+     * Onload callback
      * Important for tl_rsz_jahresprogramm_participant
      */
     public function insertUniqueId()
     {
-        //Wenn für das End-Datum nichts angegeben wird, wird dafür automatisch das Start-Datum eingetragen
+        // Wenn das End-Datum leer ist, wird  automatisch das Start-Datum eingesetzt
         $objDb = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm WHERE uniqueId = ''")->execute();
         while ($objDb->next())
         {
@@ -560,7 +503,9 @@ class tl_rsz_jahresprogramm extends Backend
     }
 
     /**
-     * Delete entries in tl_rsz_jahresprogramm_participant that have no foreign key constraints
+     * Onload callback
+     * Delete entries in tl_rsz_jahresprogramm_participant
+     * that have no foreign key constraints
      */
     public function checkReferantialIntegrity()
     {
@@ -571,6 +516,33 @@ class tl_rsz_jahresprogramm extends Backend
             $arrUuid[] = $objDb->uniqueId;
         }
         $this->Database->execute("DELETE FROM tl_rsz_jahresprogramm_participant WHERE NOT EXISTS (SELECT * FROM tl_rsz_jahresprogramm WHERE tl_rsz_jahresprogramm.uniqueId = tl_rsz_jahresprogramm_participant.uniquePid)");
+    }
+
+    /**
+     * Label callback
+     * @param $row
+     * @param $label
+     * @return mixed
+     */
+    public function labelCallback($row, $label)
+    {
+        $label = str_replace('#datum#', date('Y-m-d', (int) $row['start_date']), $label);
+
+        $this->Database->prepare('SELECT start_date,trainers FROM tl_rsz_praesenzkontrolle WHERE id=?')->execute($row['id']);
+
+        if (time() > $row['start_date'])
+        {
+            $status = '<div style="display:inline; padding-right:4px;"><img src="bundles/markocupicrszjahresprogramm/check.svg" alt="history" title="abgelaufen"></div>';
+        }
+        else
+        {
+            $status = '<div style="display:inline; padding-right:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+        }
+        $label = str_replace('#STATUS#', $status, $label);
+
+        $label = str_replace('#signIn#', $row['autoSignIn'] ? 'Anmeldung bis: ' . \Contao\Date::parse('Y-m-d', $row['registrationStop']) : '', $label);
+
+        return $label;
     }
 }
 
