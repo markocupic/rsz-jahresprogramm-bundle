@@ -322,7 +322,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
 ];
 
 /**
- * Class tl_rsz_jahresprogramm
+ * Class tl_rsz_jahresprogramm 
  */
 class tl_rsz_jahresprogramm extends Backend
 {
