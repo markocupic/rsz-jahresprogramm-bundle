@@ -311,7 +311,7 @@ class tl_rsz_jahresprogramm extends Backend
         $objEvent = \Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel::findByPk(\Contao\Input::get('id'));
         if ($objEvent === null)
         {
-            die('Event not found!');
+            throw new \Exception('Event not found!');
         }
 
         $arrHeadline = [];
