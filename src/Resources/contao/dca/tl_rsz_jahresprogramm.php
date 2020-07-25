@@ -72,7 +72,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
                 'tl_rsz_jahresprogramm',
                 'labelCallback',
             ],
-
         ],
         'global_operations' => [
             'all' => [
@@ -109,7 +108,6 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
                 'href'       => 'downloadParticipantSheet=true',
                 'icon'       => 'bundles/markocupicrszjahresprogramm/excel.svg',
                 'attributes' => 'onclick="if (!confirm(\'Soll die Teilnehmerliste heruntergeladen werden?\')) return false; Backend.getScrollOffset();"',
-
             ],
         ],
     ],
@@ -368,7 +366,7 @@ class tl_rsz_jahresprogramm extends Backend
         foreach ($arrRows as $arrRow)
         {
             $arrLine = array_map(function ($v) {
-                return html_entity_decode(htmlspecialchars_decode($v));
+                return html_entity_decode((string) htmlspecialchars_decode((string) $v));
             }, $arrRow);
             $arrFinal[] = $arrLine;
         }
