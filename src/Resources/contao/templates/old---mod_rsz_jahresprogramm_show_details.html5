@@ -72,7 +72,7 @@
                                         <h2 class="modal-title" id="myModalLabel">Anmeldeformular</h2>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="hidden" name="FORM_SUBMIT" value="tl_jahresprogramm_participant">
+                                        <input type="hidden" name="FORM_SUBMIT" value="tl_rsz_jahresprogramm_participant">
                                         <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
                                         <div class="widget widget-select  select">
                                             <label for="ctrl_71" class="select">Teilnahme Ja/Nein?</label>
