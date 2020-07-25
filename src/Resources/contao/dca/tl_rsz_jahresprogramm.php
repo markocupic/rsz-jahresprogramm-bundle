@@ -551,6 +551,7 @@ class tl_rsz_jahresprogramm extends Backend
 
     /**
      * Important for tl_rsz_jahresprogramm_participant
+     *@todo check phpdoc
      */
     public function insertUniqueId()
     {
@@ -567,8 +568,7 @@ class tl_rsz_jahresprogramm extends Backend
      */
     public function checkReferantialIntegrity()
     {
-        //Wenn für das End-Datum nichts angegeben wird, wird dafür automatisch das Start-Datum eingetragen
-        $objDb = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm")->execute();
+        $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm")->execute();
         while ($objDb->next())
         {
             $arrUuid[] = $objDb->uniqueId;
