@@ -410,7 +410,7 @@ class tl_rsz_jahresprogramm extends Backend
     public function setDca()
     {
         /** Do some restrictions to default users */
-        if (!$this->User->isAdmin && !$this->User->isMemberOf(11))
+        if ($this->User->hasAccess('rszjahresprogrammp', 'create'))
         {
             unset($GLOBALS['TL_DCA']['tl_rsz_jahresprogramm']['list']['operations']['edit']);
             unset($GLOBALS['TL_DCA']['tl_rsz_jahresprogramm']['list']['operations']['copy']);
