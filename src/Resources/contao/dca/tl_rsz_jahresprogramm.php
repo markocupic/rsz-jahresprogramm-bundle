@@ -150,7 +150,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
         'autoSignInKategories' => [
             'exclude'   => true,
             'inputType' => 'select',
-            'options'   => explode(',', \Contao\System::getContainer()->getParameter('rsz-wettkampfkategorien')),
+            'options'   => \Contao\System::getContainer()->getParameter('rsz-wettkampfkategorien'),
             'eval'      => ['multiple' => true, 'chosen' => true, 'mandatory' => true, 'tl_class' => 'clr'],
             'sql'       => "varchar(1020) NOT NULL default ''",
         ],
