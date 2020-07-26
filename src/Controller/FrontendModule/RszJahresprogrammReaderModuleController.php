@@ -20,6 +20,7 @@ use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Database;
+use Contao\Date;
 use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Input;
@@ -270,8 +271,8 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
         $arrJahresprogramm = [
             'id'         => $this->objEvent->id,
             'kw'         => $this->objEvent->kw,
-            'start_date' => $this->datumswandler(date('Y-m-d', (int) $this->objEvent->start_date)),
-            'end_date'   => $this->datumswandler(date('Y-m-d', (int) $this->objEvent->end_date)),
+            'start_date' => Date::parse('Y-m-d', (int) $this->objEvent->start_date),
+            'end_date'   => Date::parse('Y-m-d', (int) $this->objEvent->end_date),
             'art'        => $this->objEvent->art,
             'teilnehmer' => implode(', ', StringUtil::trimsplit(',', $this->objEvent->teilnehmer)),
             'kommentar'  => $this->objEvent->kommentar,
@@ -290,37 +291,6 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
         $template->Jahresprogramm = $arrJahresprogramm;
 
         return $template->getResponse();
-    }
-
-    /**
-     * @param string $Datum
-     * @return string
-     */
-    public function datumswandler(string $Datum): string
-    {
-        $Tag = substr($Datum, 8, 2); //Nimmt die 2 Zeichen rechts des 8. Zeichens(=Zeichen 9 und 10)
-        $Monat = substr($Datum, 5, 2); //Nimmt die 2 Zeichen rechts des 5. Zeichens(=Zeichen 6 und 7)
-        $Jahr = substr($Datum, 0, 4); //Gibt die 4-stellige Jahreszahl z.B 2007)
-
-        $WochentagEnglisch = date("l", mktime(0, 0, 0, (int) $Monat, (int) $Tag, (int) $Jahr));
-
-        $WochentagArray = [
-            'Monday'    => "Mo",
-            'Tuesday'   => "Di",
-            'Wednesday' => "Mi",
-            'Thursday'  => "Do",
-            'Friday'    => "Fr",
-            'Saturday'  => "Sa",
-            'Sunday'    => "So",
-        ];
-
-        $WochentagDeutsch = $WochentagArray[$WochentagEnglisch];
-
-        $Jahr = substr($Datum, 2, 2); //Gibt die 2-stellige Jahreszahl z.B. "07")
-
-        $Datum = $WochentagDeutsch . ', ' . $Tag . '.' . $Monat . '.' . $Jahr; //Hängt die 3 Variablen zum fertigen Datum zusammen
-
-        return $Datum;
     }
 
 }
