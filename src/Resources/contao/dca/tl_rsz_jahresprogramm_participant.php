@@ -8,127 +8,123 @@
  * @license LGPL-3.0+
  */
 
-
 /**
  * Table tl_rsz_jahresprogramm_participant
  */
-$GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = array(
+$GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
 
     // Config
-    'config'      => array(
+    'config'      => [
         'dataContainer'     => 'Table',
         'ptable'            => 'tl_member',
         'enableVersioning'  => true,
-        'onsubmit_callback' => array(
-            array('tl_rsz_jahresprogramm_participant', 'storeDateAdded'),
-        ),
-        'ondelete_callback' => array(//array('tl_rsz_jahresprogramm_participant', 'removeSession')
-        ),
-        'sql'               => array(
-            'keys' => array(
-                'id'    => 'primary',
+        'onsubmit_callback' => [
+            ['tl_rsz_jahresprogramm_participant', 'storeDateAdded'],
+        ],
+        'ondelete_callback' => [
+            //array('tl_rsz_jahresprogramm_participant', 'removeSession')
+        ],
+        'sql'               => [
+            'keys' => [
+                'id'  => 'primary',
                 'pid' => 'index',
-            ),
-        ),
-    ),
+            ],
+        ],
+    ],
     // List
-    'list'        => array(
-        'sorting'           => array(
+    'list'        => [
+        'sorting'           => [
             'mode'        => 2,
-            'fields'      => array('pid'),
+            'fields'      => ['pid'],
             'flag'        => 1,
             'panelLayout' => 'filter;sort,search,limit',
-        ),
-        'label'             => array(
-            'fields'         => array('pid', 'uniquePid'),
+        ],
+        'label'             => [
+            'fields'         => ['pid', 'uniquePid'],
             'showColumns'    => true,
-            'label_callback' => array('tl_rsz_jahresprogramm_participant', 'addIcon'),
-        ),
-        'global_operations' => array(
-            'all' => array(
+            'label_callback' => ['tl_rsz_jahresprogramm_participant', 'addIcon'],
+        ],
+        'global_operations' => [
+            'all' => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
-            ),
-        ),
-        'operations'        => array(
-            'edit'   => array(
+            ],
+        ],
+        'operations'        => [
+            'edit'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.svg',
-            ),
-            'delete' => array(
+            ],
+            'delete' => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-            ),
-            'show'   => array(
+            ],
+            'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.svg',
-            ),
-
-        ),
-    ),
+            ],
+        ],
+    ],
     // Palettes
-    'palettes'    => array(
+    'palettes'    => [
         'default' => 'addedOn;{personal_legend},member_id,signedOff,signedIn,signOffReason;',
-    ),
+    ],
     // Subpalettes
-    'subpalettes' => array(//
-    ),
+    'subpalettes' => [//
+    ],
     // Fields
-    'fields'      => array(
-        'id'            => array(
+    'fields'      => [
+        'id'            => [
             'sql' => "int(10) unsigned NOT NULL auto_increment",
-        ),
-        'pid'           => array(
+        ],
+        'pid'           => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
-        ),
-        'uniquePid'         => array(
+        ],
+        'uniquePid'     => [
             'sql' => "varchar(32) NOT NULL default ''",
-        ),
-        'tstamp'        => array(
+        ],
+        'tstamp'        => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
-        ),
-        'addedOn'       => array(
+        ],
+        'addedOn'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['addedOn'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
-        ),
-        'signedOff'       => array(
+        ],
+        'signedOff'     => [
             'sql' => "char(1) NOT NULL default ''",
-        ),
-        'signedIn'       => array(
+        ],
+        'signedIn'      => [
             'sql' => "char(1) NOT NULL default ''",
-        ),
-        'signOffReason' => array(
+        ],
+        'signOffReason' => [
             'label'       => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['signOffReason'],
             'exclude'     => true,
             'search'      => true,
             'inputType'   => 'textarea',
-            'eval'        => array('rte' => 'tinyMCE'),
+            'eval'        => ['rte' => 'tinyMCE'],
             'explanation' => 'insertTags',
             'sql'         => "mediumtext NULL",
-        )
-    )
-);
-
+        ]
+    ]
+];
 
 /**
- * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * Class tl_rsz_jahresprogramm_participant
  */
 class tl_rsz_jahresprogramm_participant extends Backend
 {
 
     /**
-     * Import the back end user object
+     * tl_rsz_jahresprogramm_participant constructor.
      */
     public function __construct()
     {
@@ -158,6 +154,5 @@ class tl_rsz_jahresprogramm_participant extends Backend
 
         $this->Database->prepare("UPDATE tl_rsz_jahresprogramm_participant SET addedOn=? WHERE id=?")->execute($time, $dc->id);
     }
-
 
 }
