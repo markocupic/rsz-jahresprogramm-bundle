@@ -1,102 +1,103 @@
-<div class="mod_jahresplanung detailansicht jahresplanung_lightbox<?php echo $this->class; ?>"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
-<?php if ($this->headline): ?>
-<<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
-<?php endif; ?>
-<div class="row">
-    <div class="col-12 col-md-8 col-lg-8">
+<div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+
+    <?php if ($this->headline): ?>
+        <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+    <?php endif; ?>
 
 
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-8">
 
-        <div style="text-align: right"><a onclick="window.history.back();return false;" href="#">zur&uuml;ck zur Jahrs&uuml;bersicht</a>{{br}}</div>
-        <h1><?php echo $this->Jahresprogramm["art"]; ?></h1>
+            <div style="text-align: right"><a onclick="window.history.back();return false;" href="#">zur&uuml;ck zur Jahrs&uuml;bersicht</a>{{br}}</div>
+            <h1><?php echo $this->Jahresprogramm["art"]; ?></h1>
 
-        <?php if(FE_USER_LOGGED_IN && $this->signInText != ''): ?>
-        <div class="alert alert-<?= $this->alertClass ?>"><strong><?= $this->User->firstname ?>!</strong> <?= nl2br($this->signInText) ?></div>
-        <?php endif; ?>
-
-        <table class="table table-striped" summary="Das Jahresprogramm">
-
-            <tr>
-                <td class="first_col first_row"><strong>KW:</strong></td>
-                <td class="first_row"><?php echo $this->Jahresprogramm["kw"]; ?></td>
-            </tr>
-            <tr>
-                <td class="first_col"><strong>Datum:</strong></td>
-                <td><?php echo ($this->Jahresprogramm["start_date"] == $this->Jahresprogramm["end_date"] ? $this->Jahresprogramm["start_date"] : $this->Jahresprogramm["start_date"] ." - ". $this->Jahresprogramm["end_date"]); ?></td>
-            </tr>
-
-            <?php if ($this->Jahresprogramm["ort"]!=""): ?>
-            <tr>
-                <td class="first_col"><strong>Ort:</strong></td>
-                <td><?php echo $this->Jahresprogramm["ort"]; ?></td>
-            </tr>
+            <?php if(FE_USER_LOGGED_IN && $this->signInText != ''): ?>
+            <div class="alert alert-<?= $this->alertClass ?>"><strong><?= $this->User->firstname ?>!</strong> <?= nl2br($this->signInText) ?></div>
             <?php endif; ?>
 
-            <?php if ($this->Jahresprogramm["teilnehmer"]!=""): ?>
-            <tr>
-                <td class="first_col"><strong>Teilnehmende Gruppen:</strong></td>
-                <td><?php echo $this->Jahresprogramm["teilnehmer"]; ?></td>
-            </tr>
-            <?php endif; ?>
+            <table class="table table-striped" summary="Das Jahresprogramm">
 
-            <?php if ($this->Jahresprogramm["kommentar"]!=""): ?>
-            <tr>
-                <td class="first_col"><strong>Kommentar:</strong></td>
-                <td><?php echo $this->Jahresprogramm["kommentar"]; ?></td>
-            </tr>
-            <?php endif; ?>
-            <?php if ($this->Jahresprogramm["trainer"]!=""): ?>
-            <tr>
-                <td class="first_col"><strong>Trainer:</strong></td>
-                <td><?php echo $this->Jahresprogramm["trainer"]; ?></td>
-            </tr>
-            <?php endif; ?>
+                <tr>
+                    <td class="first_col first_row"><strong>KW:</strong></td>
+                    <td class="first_row"><?php echo $this->Jahresprogramm["kw"]; ?></td>
+                </tr>
+                <tr>
+                    <td class="first_col"><strong>Datum:</strong></td>
+                    <td><?php echo ($this->Jahresprogramm["start_date"] == $this->Jahresprogramm["end_date"] ? $this->Jahresprogramm["start_date"] : $this->Jahresprogramm["start_date"] ." - ". $this->Jahresprogramm["end_date"]); ?></td>
+                </tr>
 
-            </table>
-            <?php if($this->displayForm): ?>
-            {{br}}
-            <h3>F&uuml;r die Teilnahme an diesem Event ist eine An-/Abmeldung erforderlich.</h3>
+                <?php if ($this->Jahresprogramm["ort"]!=""): ?>
+                <tr>
+                    <td class="first_col"><strong>Ort:</strong></td>
+                    <td><?php echo $this->Jahresprogramm["ort"]; ?></td>
+                </tr>
+                <?php endif; ?>
 
-            <?php if(!$this->blnSignInPerionHasExpired): ?>
-            {{br}}
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"><?= $this->formButtonText ?></button>
+                <?php if ($this->Jahresprogramm["teilnehmer"]!=""): ?>
+                <tr>
+                    <td class="first_col"><strong>Teilnehmende Gruppen:</strong></td>
+                    <td><?php echo $this->Jahresprogramm["teilnehmer"]; ?></td>
+                </tr>
+                <?php endif; ?>
 
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <form action="<?= \Environment::get('requestUri') ?>" id="f18" method="post" enctype="application/x-www-form-urlencoded">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h2 class="modal-title" id="myModalLabel">Anmeldeformular</h2>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="FORM_SUBMIT" value="tl_rsz_jahresprogramm_participant">
-                                <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
-                                <div class="widget widget-select  select">
-                                    <label for="ctrl_71" class="select">Teilnahme Ja/Nein?</label>
-                                    <select name="signIn" id="ctrl_71" class="select">
-                                        <option value="true"<?php if($this->formData['signedIn']): ?> selected<?php endif; ?>>Ich melde mich an</option>
-                                        <option value="false"<?php if($this->formData['signedOff']): ?> selected<?php endif; ?>>Ich melde mich ab</option>
-                                    </select>
+                <?php if ($this->Jahresprogramm["kommentar"]!=""): ?>
+                <tr>
+                    <td class="first_col"><strong>Kommentar:</strong></td>
+                    <td><?php echo $this->Jahresprogramm["kommentar"]; ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if ($this->Jahresprogramm["trainer"]!=""): ?>
+                <tr>
+                    <td class="first_col"><strong>Trainer:</strong></td>
+                    <td><?php echo $this->Jahresprogramm["trainer"]; ?></td>
+                </tr>
+                <?php endif; ?>
+
+                </table>
+                <?php if($this->displayForm): ?>
+                {{br}}
+                <h3>F&uuml;r die Teilnahme an diesem Event ist eine An-/Abmeldung erforderlich.</h3>
+
+                <?php if(!$this->blnSignInPerionHasExpired): ?>
+                {{br}}
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"><?= $this->formButtonText ?></button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form action="<?= \Environment::get('requestUri') ?>" id="f18" method="post" enctype="application/x-www-form-urlencoded">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h2 class="modal-title" id="myModalLabel">Anmeldeformular</h2>
                                 </div>
-                                <div class="widget widget-text ">
-                                    <label for="ctrl_70">Grund f&uuml;r die Nichtteilnahme/Kommentar</label>
-                                    <textarea name="signOffReason" id="ctrl_70" class="text"><?= $this->formData['signOffReason'] ?></textarea>
+                                <div class="modal-body">
+                                    <input type="hidden" name="FORM_SUBMIT" value="tl_rsz_jahresprogramm_participant">
+                                    <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
+                                    <div class="widget widget-select  select">
+                                        <label for="ctrl_71" class="select">Teilnahme Ja/Nein?</label>
+                                        <select name="signIn" id="ctrl_71" class="select">
+                                            <option value="true"<?php if($this->formData['signedIn']): ?> selected<?php endif; ?>>Ich melde mich an</option>
+                                            <option value="false"<?php if($this->formData['signedOff']): ?> selected<?php endif; ?>>Ich melde mich ab</option>
+                                        </select>
+                                    </div>
+                                    <div class="widget widget-text ">
+                                        <label for="ctrl_70">Grund f&uuml;r die Nichtteilnahme/Kommentar</label>
+                                        <textarea name="signOffReason" id="ctrl_70" class="text"><?= $this->formData['signOffReason'] ?></textarea>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
-                                <button type="submit" class="btn btn-primary">Formular absenden</button>
-                            </div>
-                        </form>
-                    </div><!-- end modal content -->
-                </div><!-- end modal dialog -->
-            </div><!-- end modal -->
-            <?php else: ?>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+                                    <button type="submit" class="btn btn-primary">Formular absenden</button>
+                                </div>
+                            </form>
+                        </div><!-- end modal content -->
+                    </div><!-- end modal dialog -->
+                </div><!-- end modal -->
+                <?php else: ?>
             <div class="alert alert-danger"><p>Die Anmeldefrist f&uuml;r diesen Event ist leider abgelaufen.</p></div>
             <?php endif; ?>
             <?php endif; ?>
