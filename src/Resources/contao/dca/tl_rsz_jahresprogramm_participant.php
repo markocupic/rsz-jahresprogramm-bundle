@@ -19,10 +19,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
         'ptable'            => 'tl_member',
         'enableVersioning'  => true,
         'onsubmit_callback' => [
-            ['tl_rsz_jahresprogramm_participant', 'storeDateAdded'],
-        ],
-        'ondelete_callback' => [
-            //array('tl_rsz_jahresprogramm_participant', 'removeSession')
+            ['tl_rsz_jahresprogramm_particpant', 'storeDateAdded'],
         ],
         'sql'               => [
             'keys' => [
@@ -73,7 +70,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
     ],
     // Palettes
     'palettes'    => [
-        'default' => 'addedOn;{personal_legend},member_id,signedOff,signedIn,signOffReason;',
+        'default' => '{config_legend},addedOn;{personal_legend},member_id,signedOff,signedIn,signOffReason;',
     ],
     // Subpalettes
     'subpalettes' => [//
@@ -118,9 +115,9 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
 ];
 
 /**
- * Class tl_rsz_jahresprogramm_participant
+ * Class tl_rsz_jahresprogramm_particpant
  */
-class tl_rsz_jahresprogramm_participant extends Backend
+class tl_rsz_jahresprogramm_particpant extends Backend
 {
 
     /**

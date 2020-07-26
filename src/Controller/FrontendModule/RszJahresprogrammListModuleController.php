@@ -28,7 +28,6 @@ use Doctrine\DBAL\Connection;
 use Markocupic\ExportTable\ExportTable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,7 +46,7 @@ class RszJahresprogrammListModuleController extends AbstractFrontendModuleContro
     /**
      * RszJahresprogrammListModuleController constructor.
      */
-    public function __construct( )
+    public function __construct()
     {
         //
     }
@@ -124,7 +123,8 @@ class RszJahresprogrammListModuleController extends AbstractFrontendModuleContro
         // Die ganze Tabelle
         $objJumpTo = PageModel::findByPk($model->rszJahresprogrammReaderPage);
         $arrJahresprogramm = [];
-        $objJahresprogramm = $databaseAdapter->getInstance()->execute("SELECT * FROM tl_rsz_jahresprogramm ORDER BY start_date ASC");
+        $objJahresprogramm = $databaseAdapter->getInstance()
+            ->execute("SELECT * FROM tl_rsz_jahresprogramm ORDER BY start_date ASC");
 
         while ($objJahresprogramm->next())
         {
@@ -148,7 +148,9 @@ class RszJahresprogrammListModuleController extends AbstractFrontendModuleContro
         // Die nächsten Events
         $arrNextEvent = [];
         $objJahresprogramm = $databaseAdapter->getInstance()
-            ->query("SELECT * FROM tl_rsz_jahresprogramm WHERE start_date > UNIX_TIMESTAMP() OR FROM_UNIXTIME(UNIX_TIMESTAMP(), '%Y %D %M') = FROM_UNIXTIME(tl_rsz_jahresprogramm.start_date, '%Y %D %M') ORDER BY start_date, id LIMIT 0,3");
+            ->prepare("SELECT * FROM tl_rsz_jahresprogramm WHERE start_date > ? ORDER BY start_date, id")
+            ->limit(4)
+            ->execute(time());
 
         while ($objJahresprogramm->next())
         {
@@ -171,8 +173,6 @@ class RszJahresprogrammListModuleController extends AbstractFrontendModuleContro
 
         return $template->getResponse();
     }
-
-
 
     /**
      * @throws \Exception
