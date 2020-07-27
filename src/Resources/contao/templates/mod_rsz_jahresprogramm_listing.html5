@@ -9,7 +9,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupicrszjahresprogramm/jahresprogram
 <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
 <?php endif; ?>
 
-<a href="<?= $this->downloadUrl ?>" title="Jahresprogramm herunterladen">Jahresprogramm downloaden</a>
+<!--<a href="<?= $this->downloadUrl ?>" title="Jahresprogramm herunterladen">Jahresprogramm downloaden</a>-->
 
 <h2 class="ce_headline">Nächste Anlässe</h2>
 
