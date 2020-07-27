@@ -32,10 +32,10 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class RszJahresprogrammListModuleController
+ * Class RszJahresprogrammListingModuleController
  * @package Markocupic\RszJahresprogrammBundle\Controller\FrontendModule
  */
-class RszJahresprogrammListModuleController extends AbstractFrontendModuleController
+class RszJahresprogrammListingModuleController extends AbstractFrontendModuleController
 {
     /** @var PageModel */
     protected $page;
@@ -44,7 +44,7 @@ class RszJahresprogrammListModuleController extends AbstractFrontendModuleContro
     protected $objUser;
 
     /**
-     * RszJahresprogrammListModuleController constructor.
+     * RszJahresprogrammListingModuleController constructor.
      */
     public function __construct()
     {

@@ -12,8 +12,7 @@
 /**
  * Frontend modules
  */
-//$GLOBALS['TL_DCA']['tl_module']['palettes']['rsz_jahresprogramm_list_module'] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['rsz_jahresprogramm_list_module'] = '{title_legend},name,headline,type;{config_legend},rszJahresprogrammReaderPage;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['rsz_jahresprogramm_listing_module'] = '{title_legend},name,headline,type;{config_legend},rszJahresprogrammReaderPage;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['rsz_jahresprogramm_reader_module'] = '{title_legend},name,headline,type;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 /**
