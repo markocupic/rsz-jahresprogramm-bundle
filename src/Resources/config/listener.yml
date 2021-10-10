@@ -1,8 +1,0 @@
-services:
-    _defaults: { autowire: true, autoconfigure: true, public: true }
-
-    Markocupic\RszJahresprogrammBundle\EventListener\ContaoHooks\ExportTableListener:
-        tags:
-            - { name: contao.hook, hook: exportTable, method: exportJahresprogramm, priority: 0 }
-
-

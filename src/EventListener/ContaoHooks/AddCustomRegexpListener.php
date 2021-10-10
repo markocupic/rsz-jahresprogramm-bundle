@@ -13,25 +13,22 @@ namespace Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks;
 
 use Contao\Widget;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Terminal42\ServiceAnnotationBundle\ServiceAnnotationInterface;
 
 /**
+ * @Hook(AddCustomRegexpListener::HOOK, priority=AddCustomRegexpListener::PRIORITY)
+ *
  * Class AddCustomRegexpListener
  * @package Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks
  */
-class AddCustomRegexpListener implements ServiceAnnotationInterface
+class AddCustomRegexpListener
 {
+    const HOOK = 'addCustomRegexp';
+    const PRIORITY = 10;
 
     /**
      * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
-     *
-     * @Hook("addCustomRegexp")       *
-     * @param string $strRegexp
-     * @param string $varValue
-     * @param Widget $objWidget
-     * @return bool
      */
-    public function isFirstnameAndLastname(string $strRegexp, string $varValue, Widget $objWidget): bool
+    public function __invoke(string $strRegexp, string $varValue, Widget $objWidget): bool
     {
         // Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
         if ($strRegexp === 'name')

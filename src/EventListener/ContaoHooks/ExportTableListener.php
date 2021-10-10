@@ -11,46 +11,29 @@
 
 namespace Markocupic\RszJahresprogrammBundle\EventListener\ContaoHooks;
 
-use Contao\Config;
 use Contao\Date;
 use Contao\Widget;
+use Markocupic\ExportTable\Config\Config;
 
 /**
- * Class ExportTableListener
- * @package Markocupic\RszJahresprogrammBundle\EventListener\ContaoHooks
+ * @Hook(ExportTableListener::HOOK, priority=ExportTableListener::PRIORITY)
  */
 class ExportTableListener
 {
+    public const HOOK = 'exportTable';
+    public const PRIORITY = 1;
 
-    /**
-     * Updated: Marko Cupic, 26.07.2020
-     * @param $fild
-     * @param $value
-     * @param $strTable
-     * @param array $row
-     * @return string
-     */
-    public function exportJahresprogramm($field, $value, $strTable, $row = null): string
+    public function __invoke(string $strFieldname, $varValue, string $strTablename, array $arrDataRecord, array $arrDca, Cofig $objConfig): string
     {
 
         // tl_jahresprogramm
-        if ($strTable === 'tl_rsz_jahresprogramm') {
-            //die(print_r($GLOBALS['TL_HOOKS']['exportTable'],true));
-            // Parse to date
-            if ($field === 'tstamp' || $field === 'start_date' || $field === 'end_date' || $field === 'registrationStop') {
-                $value = Date::parse(Config::get('dateFormat'), $value);
-            }
-
-            // Convert arrays to comma seperated strings
-            if (!empty($value) && is_array(unserialize($value))) {
-                $value = implode(',', unserialize($value));
-            }
+        if ($strTablename === 'tl_rsz_jahresprogramm') {
 
             // html entity decode  z.B. &#40; -> (
-            $value = html_entity_decode((string)$value);
+            $varValue = html_entity_decode((string)$varValue);
 
         }
 
-        return $value;
+        return $varValue;
     }
 }

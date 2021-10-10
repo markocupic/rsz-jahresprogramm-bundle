@@ -25,7 +25,8 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
-use Markocupic\ExportTable\ExportTable;
+use Markocupic\ExportTable\Config\Config;
+use Markocupic\ExportTable\Export\ExportTable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
@@ -44,11 +45,16 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
     protected $objUser;
 
     /**
+     * @var ExportTable
+     */
+    private $exportTable;
+
+    /**
      * RszJahresprogrammListingModuleController constructor.
      */
-    public function __construct()
+    public function __construct(ExportTable $exportTable)
     {
-        //
+        $this->exportTable = $exportTable;
     }
 
     /**
@@ -183,16 +189,26 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
         $databaseAdapter = $this->get('contao.framework')->getAdapter(Database::class);
 
         $arrFields = $databaseAdapter->getInstance()->getFieldNames('tl_rsz_jahresprogramm');
+
         // Exclude dome fields
         $arrExclude = ['id', 'tstamp', 'kw', 'uniqueId'];
         $arrFields = array_diff($arrFields, $arrExclude);
-        $options = [
-            'strSorting'         => 'start_date ASC',
-            'destinationCharset' => 'Windows-1252',
-            'arrSelectedFields'  => $arrFields,
-        ];
 
-        ExportTable::exportTable('tl_rsz_jahresprogramm', $options);
+        // Config
+        $config = (new Config('tl_rsz_jahresprogramm'))
+            ->setFields($arrFields)
+            ->setSortBy('start_date')
+            ->setSortDirection('ASC')
+            ->setRowCallback(
+                static function ($arrRow) {
+                    return array_map(function($varValue){
+                        return is_string($varValue) ? iconv("UTF-8", "ISO-8859-1", $varValue) : $varValue;
+                    }, $arrRow);
+                }
+            )
+        ;
+
+        $this->exportTable->run($config);
     }
 
 }

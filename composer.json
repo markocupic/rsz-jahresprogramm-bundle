@@ -23,6 +23,7 @@
   },
   "require": {
     "contao/core-bundle": "^4.9",
+    "markocupic/export_table": "^4.0",
     "league/csv": "^9.1"
   },
   "autoload": {

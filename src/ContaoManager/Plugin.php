@@ -47,7 +47,6 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface
     {
         $loader->load(__DIR__ . '/../Resources/config/parameters.yml');
         $loader->load(__DIR__ . '/../Resources/config/services.yml');
-        $loader->load(__DIR__ . '/../Resources/config/listener.yml');
     }
 
 }
