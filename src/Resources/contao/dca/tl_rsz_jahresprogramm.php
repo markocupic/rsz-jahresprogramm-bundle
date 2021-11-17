@@ -211,7 +211,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'sorting'   => true,
             'filter'    => true,
             'eval'      => ['mandatory' => false, 'maxlength' => 64],
-            'sql'       => "text NOT NULL",
+            'sql'       => "text NOT NULL default=''",
         ],
         'zeit'                 => [
             'exclude'   => true,
@@ -219,7 +219,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'search'    => true,
             'sorting'   => true,
             'eval'      => ['mandatory' => false, 'maxlength' => 13],
-            'sql'       => "text NOT NULL",
+            'sql'       => "text NOT NULL default=''",
         ],
         'phase'                => [
             'exclude'   => true,
@@ -228,7 +228,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'sorting'   => true,
             'filter'    => true,
             'eval'      => ['mandatory' => false, 'maxlength' => 64],
-            'sql'       => "text NOT NULL",
+            'sql'       => "text NOT NULL default=''",
         ],
         'trainingsstunden'     => [
             'exclude'   => true,
@@ -248,7 +248,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'sorting'   => true,
             'filter'    => true,
             'eval'      => ['includeBlankOption' => true, 'mandatory' => false, 'maxlength' => 64],
-            'sql'       => "text NOT NULL",
+            'sql'       => "text NOT NULL default=''",
         ],
         'treffpunkt'           => [
             'exclude'   => true,
@@ -257,7 +257,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'sorting'   => true,
             'filter'    => true,
             'eval'      => ['mandatory' => false, 'maxlength' => 64],
-            'sql'       => "text NOT NULL",
+            'sql'       => "text NOT NULL default=''",
         ],
         'kommentar'            => [
             'exclude'   => true,
@@ -266,7 +266,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
             'filter'    => true,
             'inputType' => 'textarea',
             'eval'      => [],
-            'sql'       => "text NOT NULL",
+            'sql'       => "text NOT NULL default=''",
         ],
         'kw'                   => [
             'exclude'   => true,
