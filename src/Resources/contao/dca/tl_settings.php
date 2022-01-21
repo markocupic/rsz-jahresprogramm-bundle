@@ -12,9 +12,16 @@
 /**
  * Add legend & fields
  */
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('tl_rsz_jahresprogramm_legend', 'default', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField(['tl_rsz_jahresprogramm_art', 'tl_jahresprogramm_wettkampfform', 'tl_jahresprogramm_trainingsstunden'], 'tl_rsz_jahresprogramm_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
+PaletteManipulator::create()
+    ->addLegend('tl_rsz_jahresprogramm_legend', 'default', PaletteManipulator::POSITION_APPEND)
+    ->addField([
+                   'tl_rsz_jahresprogramm_art',
+                   'tl_jahresprogramm_wettkampfform',
+                   'tl_jahresprogramm_trainingsstunden',
+               ], 'tl_rsz_jahresprogramm_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_settings');
 
 /**
@@ -22,18 +29,18 @@
  */
 $GLOBALS['TL_DCA']['tl_settings']['fields']['tl_rsz_jahresprogramm_art'] = [
     'inputType' => 'text',
-    'eval'      => ['tl_class' => 'long clr']
+    'eval'      => ['tl_class' => 'long clr'],
 ];
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['tl_jahresprogramm_wettkampfform'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['tl_jahresprogramm_wettkampfform'],
     'inputType' => 'text',
-    'eval'      => ['tl_class' => 'long clr']
+    'eval'      => ['tl_class' => 'long clr'],
 ];
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['tl_jahresprogramm_trainingsstunden'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['tl_jahresprogramm_trainingsstunden'],
     'inputType' => 'text',
-    'eval'      => ['tl_class' => 'long clr']
+    'eval'      => ['tl_class' => 'long clr'],
 ];
 

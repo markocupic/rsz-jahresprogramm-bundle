@@ -20,12 +20,16 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['rsz_jahresprogramm_reader_module'] 
  */
 $GLOBALS['TL_DCA']['tl_module']['fields']['rszJahresprogrammReaderPage'] = array
 (
-    'exclude'                 => true,
-    'inputType'               => 'pageTree',
-    'foreignKey'              => 'tl_page.title',
-    'eval'                    => array('fieldType'=>'radio'), // do not set mandatory (see #5453)
-    'sql'                     => "int(10) unsigned NOT NULL default 0",
-    'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
+    'exclude'    => true,
+    'inputType'  => 'pageTree',
+    'foreignKey' => 'tl_page.title',
+    'eval'       => array('fieldType' => 'radio'),
+    // do not set mandatory (see #5453)
+    'sql'        => "int(10) unsigned NOT NULL default 0",
+    'relation'   => array(
+        'type' => 'hasOne',
+        'load' => 'lazy',
+    ),
 );
 
 /**
@@ -36,8 +40,7 @@ class tl_module_rsz_jahresprogramm extends Contao\Backend
     /**
      * Import the back end user object
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->import('Contao\BackendUser', 'User');
     }

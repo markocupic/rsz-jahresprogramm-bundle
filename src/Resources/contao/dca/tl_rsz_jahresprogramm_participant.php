@@ -19,7 +19,10 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
         'ptable'            => 'tl_member',
         'enableVersioning'  => true,
         'onsubmit_callback' => [
-            ['tl_rsz_jahresprogramm_particpant', 'storeDateAdded'],
+            [
+                'tl_rsz_jahresprogramm_particpant',
+                'storeDateAdded',
+            ],
         ],
         'sql'               => [
             'keys' => [
@@ -37,9 +40,15 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
             'panelLayout' => 'filter;sort,search,limit',
         ],
         'label'             => [
-            'fields'         => ['pid', 'uniquePid'],
+            'fields'         => [
+                'pid',
+                'uniquePid',
+            ],
             'showColumns'    => true,
-            'label_callback' => ['tl_rsz_jahresprogramm_participant', 'addIcon'],
+            'label_callback' => [
+                'tl_rsz_jahresprogramm_participant',
+                'addIcon',
+            ],
         ],
         'global_operations' => [
             'all' => [
@@ -59,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
                 'label'      => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
             'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['show'],
@@ -93,7 +102,11 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_rsz_jahresprogramm_participant']['addedOn'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'eval'      => [
+                'rgxp'       => 'datim',
+                'datepicker' => true,
+                'tl_class'   => 'w50 wizard',
+            ],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'signedOff'     => [
@@ -110,8 +123,8 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
             'eval'        => ['rte' => 'tinyMCE'],
             'explanation' => 'insertTags',
             'sql'         => "mediumtext NULL",
-        ]
-    ]
+        ],
+    ],
 ];
 
 /**
@@ -123,8 +136,7 @@ class tl_rsz_jahresprogramm_particpant extends Backend
     /**
      * tl_rsz_jahresprogramm_participant constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->import('BackendUser', 'User');
     }
@@ -134,17 +146,14 @@ class tl_rsz_jahresprogramm_particpant extends Backend
      *
      * @param DataContainer $dc
      */
-    public function storeDateAdded($dc)
-    {
+    public function storeDateAdded($dc) {
         // Front end call
-        if (!($dc instanceof DataContainer))
-        {
+        if (!($dc instanceof DataContainer)) {
             return;
         }
 
         // Return if there is no active record (override all)
-        if (!$dc->activeRecord || $dc->activeRecord->addedOn > 0)
-        {
+        if (!$dc->activeRecord || $dc->activeRecord->addedOn > 0) {
             return;
         }
         $time = time();
