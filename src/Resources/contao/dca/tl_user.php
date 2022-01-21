@@ -17,13 +17,13 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 
 // Add fields to tl_user_group
 $GLOBALS['TL_DCA']['tl_user']['fields']['rszjahresprogrammp'] = [
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'checkbox',
-    'options' => [
+    'options'   => [
         'create',
         'delete',
     ],
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
-    'eval' => ['multiple' => true],
-    'sql' => "blob NULL",
+    'eval'      => ['multiple' => true],
+    'sql'       => "blob NULL",
 ];

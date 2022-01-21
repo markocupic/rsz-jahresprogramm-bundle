@@ -175,7 +175,7 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
                 'mandatory' => true,
                 'tl_class'  => 'clr',
             ],
-            'sql'       => "varchar(1020) NOT NULL default ''",
+            'sql'       => "blob NULL",
         ],
         'tstamp'               => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
@@ -245,9 +245,8 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm'] = [
                 'multiple'           => true,
                 'mandatory'          => false,
                 'maxlength'          => 255,
-                'csv'                => ',',
             ],
-            'sql'       => "varchar(512) NOT NULL default ''",
+            'sql'       => "blob NULL",
         ],
         'ort'                  => [
             'exclude'   => true,
