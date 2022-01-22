@@ -24,6 +24,7 @@
   "require": {
     "contao/core-bundle": "^4.9",
     "markocupic/export_table": "^5.0",
+    "markocupic/rsz-benutzerverwaltung-bundle": "dev-master",
     "league/csv": "^9.1"
   },
   "autoload": {
