@@ -274,7 +274,7 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
             'start_date' => Date::parse('Y-m-d', (int) $this->objEvent->start_date),
             'end_date'   => Date::parse('Y-m-d', (int) $this->objEvent->end_date),
             'art'        => $this->objEvent->art,
-            'teilnehmer' => implode(', ', StringUtil::trimsplit(',', $this->objEvent->teilnehmer)),
+            'teilnehmer' => implode(', ', StringUtil::deserialize($this->objEvent->teilnehmer,true)),
             'kommentar'  => $this->objEvent->kommentar,
             'ort'        => $this->objEvent->ort,
             'trainer'    => $this->objEvent->trainer,
