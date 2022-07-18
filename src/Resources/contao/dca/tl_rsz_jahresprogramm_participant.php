@@ -1,18 +1,21 @@
 <?php
 
-/**
- * Contao Open Source CMS
+declare(strict_types=1);
+
+/*
+ * This file is part of RSZ Jahresprogramm Bundle.
  *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @license LGPL-3.0+
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
-/**
+/*
  * Table tl_rsz_jahresprogramm_participant
  */
 $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
-
     // Config
     'config'      => [
         'dataContainer'     => 'Table',
@@ -82,12 +85,12 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
         'default' => '{config_legend},addedOn;{personal_legend},member_id,signedOff,signedIn,signOffReason;',
     ],
     // Subpalettes
-    'subpalettes' => [//
+    'subpalettes' => [
     ],
     // Fields
     'fields'      => [
         'id'            => [
-            'sql' => "int(10) unsigned NOT NULL auto_increment",
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid'           => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
@@ -122,31 +125,32 @@ $GLOBALS['TL_DCA']['tl_rsz_jahresprogramm_participant'] = [
             'inputType'   => 'textarea',
             'eval'        => ['rte' => 'tinyMCE'],
             'explanation' => 'insertTags',
-            'sql'         => "mediumtext NULL",
+            'sql'         => 'mediumtext NULL',
         ],
     ],
 ];
 
 /**
- * Class tl_rsz_jahresprogramm_particpant
+ * Class tl_rsz_jahresprogramm_particpant.
  */
 class tl_rsz_jahresprogramm_particpant extends Backend
 {
-
     /**
      * tl_rsz_jahresprogramm_participant constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->import('BackendUser', 'User');
     }
 
     /**
-     * Store the date
+     * Store the date.
      *
      * @param DataContainer $dc
      */
-    public function storeDateAdded($dc) {
+    public function storeDateAdded($dc): void
+    {
         // Front end call
         if (!($dc instanceof DataContainer)) {
             return;
@@ -158,7 +162,6 @@ class tl_rsz_jahresprogramm_particpant extends Backend
         }
         $time = time();
 
-        $this->Database->prepare("UPDATE tl_rsz_jahresprogramm_participant SET addedOn=? WHERE id=?")->execute($time, $dc->id);
+        $this->Database->prepare('UPDATE tl_rsz_jahresprogramm_participant SET addedOn=? WHERE id=?')->execute($time, $dc->id);
     }
-
 }

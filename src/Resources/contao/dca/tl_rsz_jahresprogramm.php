@@ -13,6 +13,8 @@
  * Table tl_rsz_jahresprogramm
  */
 
+use Contao\Input;
+use Contao\StringUtil;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel;
@@ -352,12 +354,13 @@ class tl_rsz_jahresprogramm extends Backend
      * tl_rsz_jahresprogramm constructor.
      * @throws Exception
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->import('BackendUser', 'User');
 
         // Download the participant sheet as csv file **Dez 2016**
-        if (\Contao\Input::get('downloadParticipantSheet')) {
+        if (Input::get('downloadParticipantSheet')) {
             $this->downloadParticipantSheet();
         }
     }
@@ -365,8 +368,9 @@ class tl_rsz_jahresprogramm extends Backend
     /**
      * @throws Exception
      */
-    protected function downloadParticipantSheet() {
-        $objEvent = RszJahresprogrammModel::findByPk(\Contao\Input::get('id'));
+    protected function downloadParticipantSheet()
+    {
+        $objEvent = RszJahresprogrammModel::findByPk(Input::get('id'));
         if ($objEvent === null) {
             throw new Exception('Event not found!');
         }
@@ -383,10 +387,10 @@ class tl_rsz_jahresprogramm extends Backend
         // Auto Sign In
         $arrAutoSignIn = [];
         if ($objEvent->autoSignIn) {
-            $arrKategories = \Contao\StringUtil::deserialize($objEvent->autoSignInKategories, true);
+            $arrKategories = StringUtil::deserialize($objEvent->autoSignInKategories, true);
             $objUser = $this->Database->prepare("SELECT * FROM tl_user ORDER BY kategorie")->execute();
             while ($objUser->next()) {
-                $arrFunktion = \Contao\StringUtil::deserialize($objUser->funktion, true);
+                $arrFunktion = StringUtil::deserialize($objUser->funktion, true);
                 if (in_array('Athlet', $arrFunktion)) {
                     if (in_array($objUser->kategorie, $arrKategories)) {
                         $arrAutoSignIn[$objUser->username][] = utf8_decode($objUser->name);
@@ -402,17 +406,17 @@ class tl_rsz_jahresprogramm extends Backend
         // Manual registration via Frontend Module "Jahresplanung"
         $arrSignIn = [];
         $objParticipant = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm_participant WHERE tl_rsz_jahresprogramm_participant.uniquePid=(SELECT uniqueId FROM tl_rsz_jahresprogramm WHERE tl_rsz_jahresprogramm.id=?)")
-            ->execute(\Contao\Input::get('id'));
+            ->execute(Input::get('id'));
         while ($objParticipant->next()) {
             $item = [];
             $item[] = utf8_decode(\Contao\MemberModel::findByPk($objParticipant->pid)->firstname).' '.utf8_decode(\Contao\MemberModel::findByPk($objParticipant->pid)->lastname);
             $item[] = $objParticipant->signedIn;
             $item[] = $objParticipant->signedOff;
             $item[] = utf8_decode(str_replace([
-                                                  "\r\n",
-                                                  "\r",
-                                                  "\n",
-                                              ], " ", $objParticipant->signOffReason));
+                "\r\n",
+                "\r",
+                "\n",
+            ], " ", $objParticipant->signOffReason));
             $item[] = \Contao\Date::parse('Y-m-d', $objParticipant->tstamp);
             $arrSignIn[\Contao\MemberModel::findByPk($objParticipant->pid)->username] = $item;
         }
@@ -453,7 +457,8 @@ class tl_rsz_jahresprogramm extends Backend
      * Ondelete callback
      * @param DataContainer $dc
      */
-    public function delPraesenzkontrolle(DataContainer $dc) {
+    public function delPraesenzkontrolle(DataContainer $dc)
+    {
         $objDb = $this->Database->prepare('SELECT * FROM tl_rsz_praesenzkontrolle WHERE pid=?')->execute($dc->id);
         while ($objDb->next()) {
             $objDel = $this->Database->prepare('DELETE FROM tl_rsz_praesenzkontrolle WHERE id=?')->execute($objDb->id);
@@ -467,7 +472,8 @@ class tl_rsz_jahresprogramm extends Backend
      * Onload callback
      * Manipulate dca
      */
-    public function setDca() {
+    public function setDca()
+    {
         /** Do some restrictions to default users */
         if (!$this->User->hasAccess('rszjahresprogrammp', 'create')) {
             unset($GLOBALS['TL_DCA']['tl_rsz_jahresprogramm']['list']['operations']['edit']);
@@ -486,7 +492,8 @@ class tl_rsz_jahresprogramm extends Backend
      * Onload callback
      * Erstellt anhand des startDatums die Kalenderwoche des Daatensatzes
      */
-    public function setKalenderwocheToDb() {
+    public function setKalenderwocheToDb()
+    {
         $date = $this->Database->prepare("SELECT start_date,id FROM tl_rsz_jahresprogramm")->execute();
         while ($row = $date->next()) {
             if ($row->start_date == "") {
@@ -501,7 +508,8 @@ class tl_rsz_jahresprogramm extends Backend
      * Onload callback
      * @param DataContainer $dc
      */
-    public function adjustEndDate(DataContainer $dc) {
+    public function adjustEndDate(DataContainer $dc)
+    {
         //Wenn für das End-Datum nichts angegeben wird, wird dafür automatisch das Start-Datum eingetragen
         $date = $this->Database->prepare("SELECT id, start_date FROM tl_rsz_jahresprogramm WHERE (start_date != ? AND end_date=?) OR end_date < start_date")->execute(0, 0);
         while ($date->next()) {
@@ -514,7 +522,8 @@ class tl_rsz_jahresprogramm extends Backend
      * Onload callback
      * Important for tl_rsz_jahresprogramm_participant
      */
-    public function insertUniqueId() {
+    public function insertUniqueId()
+    {
         // Wenn das End-Datum leer ist, wird  automatisch das Start-Datum eingesetzt
         $objDb = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm WHERE uniqueId = ''")->execute();
         while ($objDb->next()) {
@@ -527,7 +536,8 @@ class tl_rsz_jahresprogramm extends Backend
      * Delete entries in tl_rsz_jahresprogramm_participant
      * that have no foreign key constraints
      */
-    public function checkReferantialIntegrity() {
+    public function checkReferantialIntegrity()
+    {
         //Wenn für das End-Datum nichts angegeben wird, wird dafür automatisch das Start-Datum eingetragen
         $objDb = $this->Database->prepare("SELECT * FROM tl_rsz_jahresprogramm")->execute();
         while ($objDb->next()) {
@@ -542,7 +552,8 @@ class tl_rsz_jahresprogramm extends Backend
      * @param $label
      * @return mixed
      */
-    public function labelCallback($row, $label) {
+    public function labelCallback($row, $label)
+    {
         $label = str_replace('#datum#', \Contao\Date::parse('Y-m-d', (int)$row['start_date']), $label);
 
         $this->Database->prepare('SELECT start_date,trainers FROM tl_rsz_praesenzkontrolle WHERE id=?')->execute($row['id']);

@@ -27,6 +27,9 @@
     "markocupic/rsz-benutzerverwaltung-bundle": "dev-master",
     "league/csv": "^9.1"
   },
+  "require-dev": {
+    "contao/easy-coding-standard": "^5.3"
+  },
   "autoload": {
     "psr-4": {
       "Markocupic\\RszJahresprogrammBundle\\": "src/"

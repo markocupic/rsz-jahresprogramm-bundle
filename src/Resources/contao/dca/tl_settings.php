@@ -1,15 +1,18 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    RSZ Jahresprogramm
- * @license    MIT
- * @see        https://github.com/markocupic/rsz-jahresprogramm-bundle
+declare(strict_types=1);
+
+/*
+ * This file is part of RSZ Jahresprogramm Bundle.
  *
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
-/**
+/*
  * Add legend & fields
  */
 
@@ -18,13 +21,13 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 PaletteManipulator::create()
     ->addLegend('tl_rsz_jahresprogramm_legend', 'default', PaletteManipulator::POSITION_APPEND)
     ->addField([
-                   'tl_rsz_jahresprogramm_art',
-                   'tl_jahresprogramm_wettkampfform',
-                   'tl_jahresprogramm_trainingsstunden',
-               ], 'tl_rsz_jahresprogramm_legend', PaletteManipulator::POSITION_APPEND)
+        'tl_rsz_jahresprogramm_art',
+        'tl_jahresprogramm_wettkampfform',
+        'tl_jahresprogramm_trainingsstunden',
+    ], 'tl_rsz_jahresprogramm_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_settings');
 
-/**
+/*
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_settings']['fields']['tl_rsz_jahresprogramm_art'] = [
@@ -43,4 +46,3 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['tl_jahresprogramm_trainingsstunden'
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr'],
 ];
-
