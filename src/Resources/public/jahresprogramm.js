@@ -6,8 +6,9 @@
     $(document).ready(function () {
 
 
-        $('.all-events .col_5').addClass('hidden');
-        $('.all-events .col_6').addClass('hidden');
+        $('.all-events .col_5').addClass('d-none');
+        $('.all-events .col_6').addClass('d-none');
+
         $('.jahresprogramm-dropdown-btn .checkbox input[value="col_1"]').prop('checked', true);
         $('.jahresprogramm-dropdown-btn .checkbox input[value="col_2"]').prop('checked', true);
         $('.jahresprogramm-dropdown-btn .checkbox input[value="col_3"]').prop('checked', true);
@@ -17,7 +18,7 @@
 
 
         $('.jahresprogramm-dropdown-btn .checkbox input').on('click', function () {
-            $('.all-events .' + $(this).val()).toggleClass('hidden');
+            $('.all-events .' + $(this).val()).toggleClass('d-none');
         });
 
         $('#jahresprogramm_search_input').keyup(function () {
