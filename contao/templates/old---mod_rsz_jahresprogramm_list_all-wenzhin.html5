@@ -1,0 +1,172 @@
+<script>
+    var arrAllEvents = [
+<?php foreach ($this->Jahresprogramm as $Anlass): ?>
+    {
+        done:       '<?php echo ($Anlass["tstamp_end_date"] < time() ? '&#10004;' : '&nbsp;'); ?>',
+        datum:      '<?php echo $Anlass['start_date']; ?>',
+        art:        '<a href="<?php echo $this->url; ?>?act=show&amp;show=<?php echo $Anlass['id']; ?>"><?php echo $Anlass['art']; ?></a>',
+        ort:        '<strong><?php echo $Anlass['ort']; ?></strong>',
+        trainer:    '<strong><?php echo $Anlass['trainer']; ?></strong>',
+        kommentar:  '<strong><?php echo $Anlass['kommentar']; ?></strong>',
+    },
+<?php endforeach; ?>
+];
+
+    var arrNextEvents = [
+    <?php foreach ($this->arrNextEvent as $Anlass): ?>
+    {
+        //done:       '<?php echo ($Anlass["tstamp_end_date"] < time() ? '&#10004;' : '&nbsp;'); ?>',
+            datum:      '<?php echo $Anlass['start_date']; ?>',
+            art:        '<a href="<?php echo $this->url; ?>?act=show&amp;show=<?php echo $Anlass['id']; ?>"><?php echo $Anlass['art']; ?></a>',
+            ort:        '<strong><?php echo $Anlass['ort']; ?></strong>',
+            trainer:    '<strong><?php echo $Anlass['trainer']; ?></strong>',
+            kommentar:  '<strong><?php echo $Anlass['kommentar']; ?></strong>',
+    },
+    <?php endforeach; ?>
+    ];
+</script>
+
+
+<div class="mod_jahresprogramm <?php echo $this->class; ?>"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?>
+
+<<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+<?php endif; ?>
+
+<h1 class="ce_headline">Nächste Anlässe</h1>
+    <table id="table_next_events"></table>
+<br>
+<br>
+<h1 class="ce_headline">Alle Events</h1>
+<table id="table_all_events"></table>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="files/theme-files/bootstrap-table/src/bootstrap-table.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="files/theme-files/bootstrap-table/src/bootstrap-table.js"></script>
+
+<!-- Latest compiled and minified Locales -->
+<script src="files/theme-files/bootstrap-table/src/locale/bootstrap-table-zh-CN.js"></script>
+
+<script>
+    (function ($) {
+        //'use strict';
+        // set locales
+        $.fn.bootstrapTable.locales['de-DE'] = {
+            formatLoadingMessage: function () {
+                return 'Lade, bitte warten...';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return pageNumber + ' Einträge pro Seite';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return 'Zeige ' + pageFrom + ' bis ' + pageTo + ' von ' + totalRows + ' Zeile' + ((totalRows > 1) ? "n" : "");
+            },
+            formatSearch: function () {
+                return 'Suchen';
+            },
+            formatNoMatches: function () {
+                return 'Keine passenden Ergebnisse gefunden';
+            },
+            formatRefresh: function () {
+                return 'Neu laden';
+            },
+            formatToggle: function () {
+                return 'Umschalten';
+            },
+            formatColumns: function () {
+                return 'Spalten';
+            }
+        };
+        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['de-DE']);
+
+        // build next events table
+        $('#table_next_events').bootstrapTable({
+
+                striped: true,
+                columns: [
+                    {
+                        field: 'datum',
+                        title: 'Datum',
+                    }, {
+                        field: 'art',
+                        title: 'Art',
+                    }, {
+                        field: 'ort',
+                        title: 'Ort',
+                    }, {
+                        field: 'trainer',
+                        title: 'Trainer',
+                        visible:false,
+                    }, {
+                        field: 'kommentar',
+                        title: 'Kommentar',
+                        visible:false,
+                    }
+                ],
+                data: arrNextEvents
+            });
+
+        //build all events table
+        $('#table_all_events').bootstrapTable({
+            //height:200,
+            cardView: false,
+            showToggle: true,
+            striped: true,
+            search: true,
+            searchAlign: 'left',
+            sortName: 'datum',
+            sortOrder: 'asc',
+            pagination: false,
+            showColumns:true,
+            showHeader:true,
+            columns: [
+                {
+                    field: 'done',
+                    title: '',
+                    sortable: false,
+                    order: 'desc',
+                    searchable: true,
+                    switchable:false
+                }, {
+                    field: 'datum',
+                    title: 'Datum',
+                    sortable: true,
+                    order: 'desc',
+                    searchable: false,
+                    switchable:false
+                }, {
+                    field: 'art',
+                    title: 'Art',
+                    sortable: true,
+                    searchable: true,
+                    switchable:false
+                }, {
+                    field: 'ort',
+                    title: 'Ort',
+                    sortable: true,
+                    searchable: true,
+                    switchable:true
+                }, {
+                    field: 'trainer',
+                    title: 'Trainer',
+                    sortable: true,
+                    visible: false,
+                    switchable:true
+                }, {
+                    field: 'kommentar',
+                    title: 'Kommentar',
+                    sortable: false,
+                    visible:false,
+                    switchable:true
+                }
+            ],
+            data: arrAllEvents
+        });
+    })(jQuery);
+
+</script>
+
+</div>
+
