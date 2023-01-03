@@ -1,90 +1,61 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    RSZ Jahresprogramm
- * @license    MIT
- * @see        https://github.com/markocupic/rsz-jahresprogramm-bundle
- *
- */
-
 declare(strict_types=1);
+
+/*
+ * This file is part of Contao RSZ Jahresprogramm Bundle.
+ *
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
+ */
 
 namespace Markocupic\RszJahresprogrammBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Database;
 use Contao\Date;
-use Contao\FrontendUser;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
-use Doctrine\DBAL\Connection;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
+use Markocupic\RszSteckbriefBundle\Controller\FrontendModule\RszSteckbriefListingModuleController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class RszJahresprogrammListingModuleController
- * @package Markocupic\RszJahresprogrammBundle\Controller\FrontendModule
- */
+#[AsFrontendModule(RszSteckbriefListingModuleController::TYPE, category:'rsz_frontend_modules', template: 'mod_rsz_jahresprogramm_listing')]
 class RszJahresprogrammListingModuleController extends AbstractFrontendModuleController
 {
-    /** @var PageModel */
-    protected $page;
+    public const TYPE = 'rsz_jahresprogramm_listing_module';
 
-    /** @var  FrontendUser */
-    protected $objUser;
+    private ContaoFramework $framework;
+    private ExportTable $exportTable;
+    private ?PageModel $page = null;
 
-    /**
-     * @var ExportTable
-     */
-    private $exportTable;
-
-    /**
-     * RszJahresprogrammListingModuleController constructor.
-     */
-    public function __construct(ExportTable $exportTable)
+    public function __construct(ContaoFramework $framework, ExportTable $exportTable)
     {
+        $this->framework = $framework;
         $this->exportTable = $exportTable;
     }
 
     /**
-     * This method extends the parent __invoke method,
-     * its usage is usually not necessary
-     *
-     * @param Request $request
-     * @param ModuleModel $model
-     * @param string $section
-     * @param array|null $classes
-     * @param PageModel|null $page
-     * @return Response
      * @throws \Exception
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        /** @var Input $inputAdapter */
-        $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
+        $inputAdapter = $this->framework->getAdapter(Input::class);
 
         // Get the page model
         $this->page = $page;
 
-        $user = $this->get('security.helper')->getUser();
-        if ($user instanceof FrontendUser)
-        {
-            $this->objUser = $user;
-        }
-
-        if ($inputAdapter->get('act') === 'downloadJahresprogrammXls')
-        {
+        if ('downloadJahresprogrammXls' === $inputAdapter->get('act')) {
             $this->downloadJahresprogrammXls();
         }
 
@@ -92,101 +63,12 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
     }
 
     /**
-     * Lazyload some services
-     * @return array
-     */
-    public static function getSubscribedServices(): array
-    {
-        $services = parent::getSubscribedServices();
-
-        $services['contao.framework'] = ContaoFramework::class;
-        $services['database_connection'] = Connection::class;
-        $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['security.helper'] = Security::class;
-        $services['translator'] = TranslatorInterface::class;
-
-        return $services;
-    }
-
-    /**
-     * @param Template $template
-     * @param ModuleModel $model
-     * @param Request $request
-     * @return null|Response
      * @throws \Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
-    {
-        /** @var StringUtil $stringUtilAdapter */
-        $stringUtilAdapter = $this->get('contao.framework')->getAdapter(StringUtil::class);
-
-        /** @var Database $databaseAdapter */
-        $databaseAdapter = $this->get('contao.framework')->getAdapter(Database::class);
-
-        // Download link
-        $template->downloadUrl = $this->page->getFrontendUrl() . '?act=downloadJahresprogrammXls';
-
-        // Die ganze Tabelle
-        $objJumpTo = PageModel::findByPk($model->rszJahresprogrammReaderPage);
-        $arrJahresprogramm = [];
-        $objJahresprogramm = $databaseAdapter->getInstance()
-            ->execute("SELECT * FROM tl_rsz_jahresprogramm ORDER BY start_date ASC");
-
-        while ($objJahresprogramm->next())
-        {
-            $arrJahresprogramm[] = [
-                'id'              => $objJahresprogramm->id,
-                'kw'              => $objJahresprogramm->kw,
-                'start_date'      => Date::parse('Y-m-d', (int) $objJahresprogramm->start_date),
-                'end_date'        => Date::parse('Y-m-d', (int) $objJahresprogramm->end_date),
-                'tstamp_end_date' => $objJahresprogramm->end_date,
-                'art'             => $objJahresprogramm->art,
-                'kommentar'       => $objJahresprogramm->kommentar,
-                'ort'             => $stringUtilAdapter->substr($objJahresprogramm->ort, 40),
-                'trainer'         => $objJahresprogramm->trainer,
-                'autoSignIn'      => $objJahresprogramm->autoSignIn,
-                'signInStop'      => $objJahresprogramm->autoSignIn ? Date::parse('Y-m-d', $objJahresprogramm->registrationStop) : '',
-                'jumpTo'          => $objJumpTo ? $objJumpTo->getFrontendUrl('/' . $objJahresprogramm->id) : '',
-            ];
-        }
-        $template->Jahresprogramm = $arrJahresprogramm;
-
-        // Die nächsten Events
-        $arrNextEvent = [];
-        $objJahresprogramm = $databaseAdapter->getInstance()
-            ->prepare("SELECT * FROM tl_rsz_jahresprogramm WHERE start_date > ? ORDER BY start_date, id")
-            ->limit(4)
-            ->execute(time());
-
-        while ($objJahresprogramm->next())
-        {
-            $arrNextEvent[] = [
-                'id'              => $objJahresprogramm->id,
-                'kw'              => $objJahresprogramm->kw,
-                'start_date'      => Date::parse('Y-m-d', (int) $objJahresprogramm->start_date),
-                'end_date'        => Date::parse('Y-m-d', (int) $objJahresprogramm->end_date),
-                'tstamp_end_date' => $objJahresprogramm->end_date,
-                'art'             => $objJahresprogramm->art,
-                'kommentar'       => $objJahresprogramm->kommentar,
-                'ort'             => $stringUtilAdapter->substr($objJahresprogramm->ort, 40),
-                'trainer'         => $stringUtilAdapter->substr($objJahresprogramm->trainer, 10),
-                'autoSignIn'      => $objJahresprogramm->autoSignIn,
-                'signInStop'      => $objJahresprogramm->autoSignIn ? Date::parse('Y-m-d', $objJahresprogramm->registrationStop) : '',
-                'jumpTo'          => $objJumpTo ? $objJumpTo->getFrontendUrl('/' . $objJahresprogramm->id) : '',
-            ];
-        }
-        $template->arrNextEvent = $arrNextEvent;
-
-        return $template->getResponse();
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function downloadJahresprogrammXls()
+    public function downloadJahresprogrammXls(): void
     {
         /** @var Database $databaseAdapter */
-        $databaseAdapter = $this->get('contao.framework')->getAdapter(Database::class);
+        $databaseAdapter = $this->framework->getAdapter(Database::class);
 
         $arrFields = $databaseAdapter->getInstance()->getFieldNames('tl_rsz_jahresprogramm');
 
@@ -200,16 +82,78 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
             ->setSortBy('start_date')
             ->setSortDirection('ASC')
             ->setRowCallback(
-                static function ($arrRow) {
-                    return array_map(function($varValue){
-                        return is_string($varValue) ? iconv("UTF-8", "ISO-8859-1", $varValue) : $varValue;
-                    }, $arrRow);
-                }
+                static fn ($arrRow) => array_map(static fn ($varValue) => \is_string($varValue) ? iconv('UTF-8', 'ISO-8859-1', $varValue) : $varValue, $arrRow)
             )
         ;
 
         $this->exportTable->run($config);
     }
 
-}
+    /**
+     * @throws \Exception
+     *
+     * @return Response|null
+     */
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    {
+        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $databaseAdapter = $this->framework->getAdapter(Database::class);
 
+        // Download link
+        $template->downloadUrl = $this->page->getFrontendUrl().'?act=downloadJahresprogrammXls';
+
+        // Die ganze Tabelle
+        $objJumpTo = PageModel::findByPk($model->rszJahresprogrammReaderPage);
+        $arrJahresprogramm = [];
+        $objJahresprogramm = $databaseAdapter->getInstance()
+            ->execute('SELECT * FROM tl_rsz_jahresprogramm ORDER BY start_date ASC')
+        ;
+
+        while ($objJahresprogramm->next()) {
+            $arrJahresprogramm[] = [
+                'id' => $objJahresprogramm->id,
+                'kw' => $objJahresprogramm->kw,
+                'start_date' => Date::parse('Y-m-d', (int) $objJahresprogramm->start_date),
+                'end_date' => Date::parse('Y-m-d', (int) $objJahresprogramm->end_date),
+                'tstamp_end_date' => $objJahresprogramm->end_date,
+                'art' => $objJahresprogramm->art,
+                'kommentar' => $objJahresprogramm->kommentar,
+                'ort' => $stringUtilAdapter->substr($objJahresprogramm->ort, 40),
+                'trainer' => $objJahresprogramm->trainer,
+                'autoSignIn' => $objJahresprogramm->autoSignIn,
+                'signInStop' => $objJahresprogramm->autoSignIn ? Date::parse('Y-m-d', $objJahresprogramm->registrationStop) : '',
+                'jumpTo' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
+            ];
+        }
+
+        $template->Jahresprogramm = $arrJahresprogramm;
+
+        // Next events
+        $arrNextEvent = [];
+        $objJahresprogramm = $databaseAdapter->getInstance()
+            ->prepare('SELECT * FROM tl_rsz_jahresprogramm WHERE start_date > ? ORDER BY start_date, id')
+            ->limit(4)
+            ->execute(time())
+        ;
+
+        while ($objJahresprogramm->next()) {
+            $arrNextEvent[] = [
+                'id' => $objJahresprogramm->id,
+                'kw' => $objJahresprogramm->kw,
+                'start_date' => Date::parse('Y-m-d', (int) $objJahresprogramm->start_date),
+                'end_date' => Date::parse('Y-m-d', (int) $objJahresprogramm->end_date),
+                'tstamp_end_date' => $objJahresprogramm->end_date,
+                'art' => $objJahresprogramm->art,
+                'kommentar' => $objJahresprogramm->kommentar,
+                'ort' => $stringUtilAdapter->substr($objJahresprogramm->ort, 40),
+                'trainer' => $stringUtilAdapter->substr($objJahresprogramm->trainer, 10),
+                'autoSignIn' => $objJahresprogramm->autoSignIn,
+                'signInStop' => $objJahresprogramm->autoSignIn ? Date::parse('Y-m-d', $objJahresprogramm->registrationStop) : '',
+                'jumpTo' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
+            ];
+        }
+        $template->arrNextEvent = $arrNextEvent;
+
+        return $template->getResponse();
+    }
+}

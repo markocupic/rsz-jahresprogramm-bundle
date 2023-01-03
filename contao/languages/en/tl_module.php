@@ -12,11 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
-namespace Markocupic\RszJahresprogrammBundle\Model;
-
-use Contao\Model;
-
-class RszJahresprogrammParticipantModel extends Model
-{
-    protected static $strTable = 'tl_rsz_jahresprogramm_participant';
-}
+/**
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_module']['rszJahresprogrammReaderPage'] = ['Readermodul-Page', 'Wählen Sie die Seite mit dem Readermodul aus.'];

@@ -12,11 +12,15 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
-namespace Markocupic\RszJahresprogrammBundle\Model;
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_user']['rszjahresprogrammp_legend']  = 'Jahresprogrammrechte';
 
-use Contao\Model;
+/**
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_user']['rszjahresprogrammp'] = ['Jahresprogrammrechte', 'Hier können Sie die Jahresprogrammrechte festlegen.'];
 
-class RszJahresprogrammParticipantModel extends Model
-{
-    protected static $strTable = 'tl_rsz_jahresprogramm_participant';
-}
+
+

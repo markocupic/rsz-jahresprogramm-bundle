@@ -1,40 +1,37 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    RSZ Benutzerverwaltung
- * @license    MIT
- * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao RSZ Jahresprogramm Bundle.
  *
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
 namespace Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Widget;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 
-/**
- * @Hook(AddCustomRegexpListener::HOOK, priority=AddCustomRegexpListener::PRIORITY)
- *
- * Class AddCustomRegexpListener
- * @package Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks
- */
+#[AsHook(AddCustomRegexpListener::HOOK, priority: AddCustomRegexpListener::PRIORITY)]
 class AddCustomRegexpListener
 {
-    const HOOK = 'addCustomRegexp';
-    const PRIORITY = 10;
+    public const HOOK = 'addCustomRegexp';
+    public const PRIORITY = 10;
 
     /**
-     * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
+     * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter).
      */
     public function __invoke(string $strRegexp, string $varValue, Widget $objWidget): bool
     {
         // Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
-        if ($strRegexp === 'name')
-        {
-            if (strpos(trim($varValue), ' ') === false)
-            {
+        if ('name' === $strRegexp) {
+
+            if (false === strpos(trim($varValue), ' ')) {
                 $objWidget->addError('Der Name sollte aus mindestens zwei durch einen Leerschlag voneinander getrennten Wörtern bestehen.');
             }
 
