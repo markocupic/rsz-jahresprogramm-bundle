@@ -22,7 +22,7 @@ class ExportTableListener
 {
     public const HOOK = 'exportTable';
 
-    public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig): string
+    public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig): mixed
     {
         if ('tl_rsz_jahresprogramm' === $strTableName) {
             // html entity decode  z.B. &#40; -> (
