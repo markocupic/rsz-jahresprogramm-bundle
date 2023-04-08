@@ -17,16 +17,14 @@ namespace Markocupic\RszJahresprogrammBundle\EventListener\ContaoHooks;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\ExportTable\Config\Config;
 
-#[AsHook(ExportTableListener::HOOK, priority: ExportTableListener::PRIORITY)]
+#[AsHook(ExportTableListener::HOOK, priority: 1)]
 class ExportTableListener
 {
     public const HOOK = 'exportTable';
-    public const PRIORITY = 1;
 
-    public function __invoke(string $strFieldname, $varValue, string $strTablename, array $arrDataRecord, array $arrDca, Config $objConfig): string
+    public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig): string
     {
-        // tl_jahresprogramm
-        if ('tl_rsz_jahresprogramm' === $strTablename) {
+        if ('tl_rsz_jahresprogramm' === $strTableName) {
             // html entity decode  z.B. &#40; -> (
             $varValue = html_entity_decode((string) $varValue);
         }

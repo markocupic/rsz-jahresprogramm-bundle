@@ -33,14 +33,12 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
 {
     public const TYPE = 'rsz_jahresprogramm_listing_module';
 
-    private ContaoFramework $framework;
-    private ExportTable $exportTable;
     private ?PageModel $page = null;
 
-    public function __construct(ContaoFramework $framework, ExportTable $exportTable)
-    {
-        $this->framework = $framework;
-        $this->exportTable = $exportTable;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly ExportTable $exportTable,
+    ) {
     }
 
     /**

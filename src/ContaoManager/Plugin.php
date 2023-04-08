@@ -22,10 +22,7 @@ use Markocupic\RszJahresprogrammBundle\MarkocupicRszJahresprogrammBundle;
 
 class Plugin implements BundlePluginInterface
 {
-    /**
-     * @return array
-     */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(MarkocupicRszJahresprogrammBundle::class)

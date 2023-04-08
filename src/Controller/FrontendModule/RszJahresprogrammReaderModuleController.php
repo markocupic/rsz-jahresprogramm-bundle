@@ -43,17 +43,14 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
 {
     public const TYPE = 'rsz_jahresprogramm_reader_module';
 
-    private ContaoFramework $framework;
-    private Security $security;
-    private ScopeMatcher $scopeMatcher;
     private ?FrontendUser $objUser = null;
     private ?RszJahresprogrammModel $objEvent = null;
 
-    public function __construct(ContaoFramework $framework, Security $security, ScopeMatcher $scopeMatcher)
-    {
-        $this->scopeMatcher = $scopeMatcher;
-        $this->framework = $framework;
-        $this->security = $security;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Security $security,
+        private readonly ScopeMatcher $scopeMatcher,
+    ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
