@@ -8,4 +8,4 @@ services:
 
     Markocupic\RszJahresprogrammBundle\:
         resource: ../src/
-        exclude: [ '../src/{DependencyInjection}' ]
+        exclude: [ '../src/{DependencyInjection,Model,ContaoManager}' ]
