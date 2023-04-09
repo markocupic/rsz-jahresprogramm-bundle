@@ -15,9 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\RszJahresprogrammBundle\DataContainer;
 
 use Contao\Backend;
-use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
-use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\DataContainer;
 use Contao\Date;
@@ -33,12 +31,8 @@ use League\Csv\Writer;
 use Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel;
 use Markocupic\RszJahresprogrammBundle\Security\RszBackendPermissions;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\String\UnicodeString;
 
 class RszJahresprogramm extends Backend
 {
@@ -133,7 +127,7 @@ class RszJahresprogramm extends Backend
      * that have no foreign key constraints.
      */
     #[AsCallback(table: 'tl_rsz_jahresprogramm', target: 'config.onload', priority: 255)]
-    public function checkReferantialIntegrity(): void
+    public function checkReferentialIntegrity(): void
     {
         $this->connection->executeStatement('DELETE FROM tl_rsz_jahresprogramm_participant WHERE NOT EXISTS (SELECT * FROM tl_rsz_jahresprogramm WHERE tl_rsz_jahresprogramm.uniqueId = tl_rsz_jahresprogramm_participant.uniquePid)');
     }
@@ -216,8 +210,6 @@ class RszJahresprogramm extends Backend
         // Merging the arrays
         $arrRows = array_merge($arrHeadline, $arrAutoSignIn, $arrSignIn);
 
-
-
         // Convert special chars
         $arrFinal = [];
 
@@ -236,11 +228,10 @@ class RszJahresprogramm extends Backend
         $csv->insertAll($arrFinal);
 
         $filePath = 'system/tmp/rsz-event-teilnehmerliste_event-'.Date::parse('Y-m-d', $objEvent->start_date).'.csv';
-        $objFile= new File($filePath);
+        $objFile = new File($filePath);
         $objFile->write($csv->toString());
         $objFile->close();
         $objFile->sendToBrowser();
-
     }
 
     #[AsCallback(table: 'tl_rsz_jahresprogramm', target: 'list.label.label', priority: 255)]
