@@ -1,5 +1,4 @@
-![Alt text](docs/logo.png?raw=true "logo")
-![Alt text](docs/RSZ_logo.svg?raw=true "logo")
+![Alt text](docs/rsz-logo.svg?raw=true "logo")
 
 # RSZ Jahresprogramm
 
