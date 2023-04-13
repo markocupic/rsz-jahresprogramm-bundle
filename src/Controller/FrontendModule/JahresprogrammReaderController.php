@@ -21,6 +21,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Database;
 use Contao\Date;
 use Contao\Environment;
@@ -38,10 +39,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 
-#[AsFrontendModule(RszJahresprogrammReaderModuleController::TYPE, category: 'rsz_frontend_modules', template: 'mod_rsz_jahresprogramm_reader')]
-class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleController
+#[AsFrontendModule(JahresprogrammReaderController::TYPE, category: 'rsz_frontend_modules')]
+class JahresprogrammReaderController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'rsz_jahresprogramm_reader_module';
+    public const TYPE = 'jahresprogramm_reader';
 
     private ?FrontendUser $objUser = null;
     private ?RszJahresprogrammModel $objEvent = null;
@@ -95,7 +96,7 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $inputAdapter = $this->framework->getAdapter(Input::class);
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
@@ -106,7 +107,7 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
 
         if (null !== $this->objEvent) {
             if ($this->objUser && $this->objEvent->autoSignIn) {
-                $template->User = MemberModel::findByPk($this->objUser);
+                $template->set('User', MemberModel::findByPk($this->objUser));
                 $objBackendUser = UserModel::findByUsername($this->objUser->username);
 
                 // Handle form input for event subscription
@@ -160,26 +161,26 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
 
                 if ($objParticipant->numRows) {
                     $arrParticipant = $objParticipant->row();
-                    $template->formData = $arrParticipant;
+                    $template->set('formData',$arrParticipant);
 
                     if ('1' === $arrParticipant['signedIn']) {
-                        $template->signInText = 'Super, du hast dich für diesen Anlass angemeldet.'.('' !== $objParticipant->signOffReason ? '{{br}}{{br}}<strong>Mitteilung:</strong>{{br}}'.$objParticipant->signOffReason : '');
-                        $template->alertClass = 'success';
-                        $template->formButtonText = 'Abmelden';
+                        $template->set('signInText', 'Super, du hast dich für diesen Anlass angemeldet.'.('' !== $objParticipant->signOffReason ? '{{br}}{{br}}<strong>Mitteilung:</strong>{{br}}'.$objParticipant->signOffReason : ''));
+                        $template->set('alertClass','success');
+                        $template->set('formButtonText', 'Abmelden');
                     } elseif ('1' === $arrParticipant['signedOff']) {
-                        $template->signInText = 'Du hast dich für diesen Anlass abgemeldet.'.('' !== $objParticipant->signOffReason ? '{{br}}{{br}}<strong>Grund:</strong>{{br}}'.$objParticipant->signOffReason : '');
-                        $template->alertClass = 'danger';
-                        $template->formButtonText = 'Anmelden';
+                        $template->set('signInText','Du hast dich für diesen Anlass abgemeldet.'.('' !== $objParticipant->signOffReason ? '{{br}}{{br}}<strong>Grund:</strong>{{br}}'.$objParticipant->signOffReason : ''));
+                        $template->set('alertClass','danger');
+                        $template->set('formButtonText', 'Anmelden');
                     }
                 } elseif ($blnUserIsAutoSignedIn) {
-                    $template->signInText = 'Du bist für diesen Anlass automatisch angemeldet.';
-                    $template->alertClass = 'success';
-                    $template->formButtonText = 'Abmelden';
+                    $template->set('signInText', 'Du bist für diesen Anlass automatisch angemeldet.');
+                    $template->set('alertClass', 'success');
+                    $template->set('formButtonText', 'Abmelden');
                 } elseif (!$this->objEvent->autoSignIn) {
-                    $template->formData = null;
-                    $template->signInText = 'Du hast dich für diesen Anlass noch nicht angemeldet.';
-                    $template->alertClass = 'info';
-                    $template->formButtonText = 'Anmelden';
+                    $template->set('formData', null);
+                    $template->set('signInText', 'Du hast dich für diesen Anlass noch nicht angemeldet.');
+                    $template->set('alertClass', 'info');
+                    $template->set('formButtonText', 'Anmelden');
                 } else {
                     $userIsNotAllowedToSignIn = true;
                 }
@@ -199,14 +200,14 @@ class RszJahresprogrammReaderModuleController extends AbstractFrontendModuleCont
             'autoSignIn' => $this->objEvent->autoSignIn,
         ];
 
-        $template->displayForm = $this->objUser && $this->objEvent->autoSignIn ? true : false;
+        $template->set('displayForm', $this->objUser && $this->objEvent->autoSignIn ? true : false);
 
         if ($userIsNotAllowedToSignIn) {
-            $template->displayForm = false;
+            $template->set('displayForm', false);
         }
 
-        $template->blnSignInPerionHasExpired = $this->objEvent->registrationStop < time() ? true : false;
-        $template->Jahresprogramm = $arrJahresprogramm;
+        $template->set('blnSignInPerionHasExpired', $this->objEvent->registrationStop < time() ? true : false);
+        $template->set('Jahresprogramm', $arrJahresprogramm);
 
         return $template->getResponse();
     }

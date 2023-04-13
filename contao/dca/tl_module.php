@@ -12,14 +12,14 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
-use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\RszJahresprogrammListingModuleController;
-use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\RszJahresprogrammReaderModuleController;
+use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\JahresprogrammListingController;
+use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\JahresprogrammReaderController;
 
 /*
  * Frontend modules
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes'][RszJahresprogrammListingModuleController::TYPE] = '{title_legend},name,headline,type;{config_legend},rszJahresprogrammReaderPage;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][RszJahresprogrammReaderModuleController::TYPE] = '{title_legend},name,headline,type;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][JahresprogrammListingController::TYPE] = '{title_legend},name,headline,type;{config_legend},rszJahresprogrammReaderPage;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][JahresprogrammReaderController::TYPE] = '{title_legend},name,headline,type;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 /*
  * Fields

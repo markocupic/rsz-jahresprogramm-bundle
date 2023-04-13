@@ -17,6 +17,7 @@ namespace Markocupic\RszJahresprogrammBundle\Controller\FrontendModule;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Database;
 use Contao\Input;
 use Contao\ModuleModel;
@@ -28,10 +29,10 @@ use Markocupic\ExportTable\Export\ExportTable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(RszJahresprogrammListingModuleController::TYPE, category:'rsz_frontend_modules', template: 'mod_rsz_jahresprogramm_listing')]
-class RszJahresprogrammListingModuleController extends AbstractFrontendModuleController
+#[AsFrontendModule(JahresprogrammListingModuleController::TYPE, category:'rsz_frontend_modules')]
+class JahresprogrammListingController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'rsz_jahresprogramm_listing_module';
+    public const TYPE = 'jahresprogramm_listing';
 
     private ?PageModel $page = null;
 
@@ -85,18 +86,19 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
         $this->exportTable->run($config);
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
         $databaseAdapter = $this->framework->getAdapter(Database::class);
 
         // Download link
-        $template->downloadUrl = $this->page->getFrontendUrl().'?act=downloadJahresprogrammXls';
+        $template->set('downloadUrl', $this->page->getFrontendUrl().'?act=downloadJahresprogrammXls');
 
         // Die ganze Tabelle
         $objJumpTo = PageModel::findByPk($model->rszJahresprogrammReaderPage);
         $arrJahresprogramm = [];
-        $objJahresprogramm = $databaseAdapter->getInstance()
+        $objJahresprogramm = $databaseAdapter
+            ->getInstance()
             ->execute('SELECT * FROM tl_rsz_jahresprogramm ORDER BY start_date ASC')
         ;
 
@@ -117,7 +119,7 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
             ];
         }
 
-        $template->Jahresprogramm = $arrJahresprogramm;
+        $template->set('jahresprogramm', $arrJahresprogramm);
 
         // Next events
         $arrNextEvent = [];
@@ -143,7 +145,7 @@ class RszJahresprogrammListingModuleController extends AbstractFrontendModuleCon
                 'jumpTo' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
             ];
         }
-        $template->arrNextEvent = $arrNextEvent;
+        $template->set('arrNextEvent', $arrNextEvent);
 
         return $template->getResponse();
     }

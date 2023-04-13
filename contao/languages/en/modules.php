@@ -12,8 +12,8 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/rsz-jahresprogramm-bundle
  */
 
-use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\RszJahresprogrammListingModuleController;
-use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\RszJahresprogrammReaderModuleController;
+use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\JahresprogrammListingController;
+use Markocupic\RszJahresprogrammBundle\Controller\FrontendModule\JahresprogrammReaderController;
 
 /**
  * Backend modules
@@ -25,7 +25,7 @@ $GLOBALS['TL_LANG']['MOD']['rsz_jahresprogramm'] = ['RSZ Jahresprogramm', 'Jahre
  * Frontend modules
  */
 $GLOBALS['TL_LANG']['FMD']['rsz_frontend_modules'] = 'RSZ Frontend Module';
-$GLOBALS['TL_LANG']['FMD'][RszJahresprogrammListingModuleController::TYPE] = ['RSZ Jahresprogramm-Liste', 'Fügen Sie der Seite eine RSZ Jahresprogramm-Liste hinzu.'];
-$GLOBALS['TL_LANG']['FMD'][RszJahresprogrammReaderModuleController::TYPE] = ['RSZ Jahresprogramm-Reader', 'Fügen Sie der Seite eineb RSZ Jahresprogramm-Reader hinzu.'];
+$GLOBALS['TL_LANG']['FMD'][JahresprogrammListingController::TYPE] = ['RSZ Jahresprogramm-Liste', 'Fügen Sie der Seite eine RSZ Jahresprogramm-Liste hinzu.'];
+$GLOBALS['TL_LANG']['FMD'][JahresprogrammReaderController::TYPE] = ['RSZ Jahresprogramm-Reader', 'Fügen Sie der Seite eineb RSZ Jahresprogramm-Reader hinzu.'];
 
 
