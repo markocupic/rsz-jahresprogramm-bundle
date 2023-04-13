@@ -1,0 +1,133 @@
+{# jahresprogramm_listing.html.twig #}
+
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% block content %}
+
+    {% add to head %}
+        <script src="bundles/markocupicrszjahresprogramm/jquery.tablesorter.min.js"></script>
+        <script src="bundles/markocupicrszjahresprogramm/jahresprogramm.js"></script>
+    {% endadd %}
+
+    <h2 class="ce_headline">Nächste Anlässe</h2>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="table_next_events">
+            <thead>
+            <tr>
+                <th class="col_0">
+                    <i class="fa-regular fa-clock"></i>
+                </th>
+                <th class="col_1">Datum</th>
+                <th class="col_2">Art</th>
+                <th class="col_3">Ort</th>
+                <th class="col_4">An-/Abmeldung bis</th>
+                <th class="col_5">Trainer</th>
+                <th class="col_6">Kommentar</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for event in upcoming_events %}
+                <tr>
+                    <td class="col_0">{{ event.tstamp_end_date <  date().timestamp ? '&#10004;' : '&nbsp;' }}</td>
+                    <td class="col_1">{{ event.start_date }}</td>
+                    <td class="col_2"><a href="{{ event.jump_to }}">{{ event.art }}</a></td>
+                    <td class="col_3">{{ event.ort }}</td>
+                    <td class="col_4">{{ event.sign_in_stop }}</td>
+                    <td class="col_5">{{ event.trainer }}</td>
+                    <td class="col_6">{{ event.kommentar }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <br>
+    <br>
+
+    <h2 class="ce_headline">Alle Events</h2>
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="input-group">
+                <button class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-regular fa-table-cells"></i>
+                </button>
+                <div class="dropdown-menu jahresprogramm-dropdown-btn p-3">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_1" value="col_1">
+                            Datum
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_2" value="col_2">
+                            Art
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_3" value="col_3">
+                            Ort
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_4" value="col_4">
+                            Anmeldung
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_5" value="col_5">
+                            Trainer
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="checkbox-col_6" value="col_6">
+                            Kommentar
+                        </label>
+                    </div>
+                </div>
+
+                <input type="text" id="jahresprogramm_search_input" class="form-control" placeholder="Suchbegriffe" aria-describedby="basic-addon2">
+                <button class="btn btn-danger" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="table-responsive">
+        <table class="table all-events table-striped tablesorter" id="table_all_events">
+            <thead>
+            <tr>
+                <th class="col_0"><i class="fa-regular fa-clock"></i></th>
+                <th class="col_1">Datum</th>
+                <th class="col_2">Art</th>
+                <th class="col_3">Ort</th>
+                <th class="col_4">An-/Abmeldung bis</th>
+                <th class="col_5">Trainer</th>
+                <th class="col_6">Kommentar</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for event in events_all %}
+                <tr>
+                    <td class="col_0 ps-2 pe-2">{{ event.tstamp_end_date <  date().timestamp ? '&#10004;' : '&nbsp;' }}</td>
+                    <td class="col_1">{{ event.start_date }}</td>
+                    <td class="col_2"><a href="{{ event.jump_to }}">{{ event.art }}</a></td>
+                    <td class="col_3">{{ event.ort }}</td>
+                    <td class="col_4">{{ event.sign_in_stop }}</td>
+                    <td class="col_5">{{ event.trainer }}</td>
+                    <td class="col_6">{{ event.kommentar }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

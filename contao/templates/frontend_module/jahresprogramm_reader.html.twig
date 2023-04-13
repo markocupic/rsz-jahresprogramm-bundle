@@ -1,0 +1,108 @@
+{# jahresprogramm_reader.html.twig #}
+
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-8">
+
+        <div class="text-right mb-4">{{ '{{link::back}}' }}</div>
+        <h1>{{ event.art }}</h1>
+
+        {% if user|default(false) and sign_in_text is not empty %}
+            <div class="alert alert-{{ alert_class }}"><strong>{{ user.firstname }}!</strong> {{ sign_in_text|nl2br }}</div>
+        {% endif %}
+
+        <table class="table table-striped">
+            <tr>
+                <td class="first_col first_row"><strong>KW:</strong></td>
+                <td class="first_row">{{ event.kw }}</td>
+            </tr>
+            <tr>
+                <td class="first_col"><strong>Datum:</strong></td>
+                <td>
+                    {% if event.start_date is same as event.end_date %}
+                        {{ event.start_date }}
+                    {% else %}
+                        {{ event.start_date }} - {{ event.end_date }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% if event.ort is not empty %}
+                <tr>
+                    <td class="first_col"><strong>Ort:</strong></td>
+                    <td>{{ event.ort }}</td>
+                </tr>
+            {% endif %}
+            {% if event.teilnehmer is not empty %}
+                <tr>
+                    <td class="first_col"><strong>Teilnehmende Gruppen:</strong></td>
+                    <td>{{ event.teilnehmer }}</td>
+                </tr>
+            {% endif %}
+            {% if event.teilnehmer is not empty %}
+                <tr>
+                    <td class="first_col"><strong>Kommentar:</strong></td>
+                    <td>{{ event.kommentar }}</td>
+                </tr>
+            {% endif %}
+            {% if event.teilnehmer is not empty %}
+                <tr>
+                    <td class="first_col"><strong>Trainer:</strong></td>
+                    <td>{{ event.trainer }}</td>
+                </tr>
+            {% endif %}
+        </table>
+
+        {% if display_form|default(false) %}
+            <br>
+            <h3>Für die Teilnahme an diesem Event ist eine An-/Abmeldung erforderlich.</h3>
+
+            {% if not bln_sign_in_period_expired %}
+                <br>
+                {# Button trigger modal #}
+                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">{{ form_button_text }}</button>
+
+                {# modal start #}
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form action="{{ request_uri }}" id="f18" method="post" enctype="application/x-www-form-urlencoded">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h2 class="modal-title" id="myModalLabel">Anmeldeformular</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="FORM_SUBMIT" value="tl_rsz_jahresprogramm_participant">
+                                    <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+                                    <div class="widget widget-select  select">
+                                        <label for="ctrl_71" class="select">Teilnahme Ja/Nein?</label>
+                                        <select name="signIn" id="ctrl_71" class="select">
+                                            <option value="true"{% if form_data.signedIn|default(false) %} selected{% endif %}>Ich melde mich an</option>
+                                            <option value="false"{% if form_data.signedOff|default(false) %} selected{% endif %}>Ich melde mich ab</option>
+                                        </select>
+                                    </div>
+                                    <div class="widget widget-text ">
+                                        <label for="ctrl_70">Grund für die Nichtteilnahme/Kommentar</label>
+                                        <textarea name="signOffReason" id="ctrl_70" class="text">{{ form_data.signOffReason|default('') }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schliessen</button>
+                                    <button type="submit" class="btn btn-primary">Formular absenden</button>
+                                </div>
+                            </form>
+                        </div>{# end modal content #}
+                    </div>{# end modal dialog #}
+                </div>{# end modal #}
+            {% else %}
+                <div class="alert alert-danger"><p>Die Anmeldefrist für diesen Event ist leider abgelaufen.</p></div>
+            {% endif %}
+        {% endif %}
+        </div>{# end col #}
+    </div>{# end row #}
+
+{% endblock %}

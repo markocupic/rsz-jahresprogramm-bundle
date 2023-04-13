@@ -95,14 +95,14 @@ class JahresprogrammListingController extends AbstractFrontendModuleController
 
         // Die ganze Tabelle
         $objJumpTo = PageModel::findByPk($model->rszJahresprogrammReaderPage);
-        $arrJahresprogramm = [];
+        $eventsAll = [];
         $objJahresprogramm = $databaseAdapter
             ->getInstance()
             ->execute('SELECT * FROM tl_rsz_jahresprogramm ORDER BY start_date ASC')
         ;
 
         while ($objJahresprogramm->next()) {
-            $arrJahresprogramm[] = [
+            $eventsAll[] = [
                 'id' => $objJahresprogramm->id,
                 'kw' => $objJahresprogramm->kw,
                 'start_date' => date('Y-m-d', (int) $objJahresprogramm->start_date),
@@ -112,16 +112,16 @@ class JahresprogrammListingController extends AbstractFrontendModuleController
                 'kommentar' => $objJahresprogramm->kommentar,
                 'ort' => $stringUtilAdapter->substr($objJahresprogramm->ort, 40),
                 'trainer' => $objJahresprogramm->trainer,
-                'autoSignIn' => $objJahresprogramm->autoSignIn,
-                'signInStop' => $objJahresprogramm->autoSignIn ? date('Y-m-d', (int) $objJahresprogramm->registrationStop) : '',
-                'jumpTo' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
+                'auto_sign_in' => $objJahresprogramm->autoSignIn,
+                'sign_in_stop' => $objJahresprogramm->autoSignIn ? date('Y-m-d', (int) $objJahresprogramm->registrationStop) : '',
+                'jump_to' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
             ];
         }
 
-        $template->set('jahresprogramm', $arrJahresprogramm);
+        $template->set('events_all', $eventsAll);
 
         // Next events
-        $arrNextEvent = [];
+        $upcomingEvents = [];
         $objJahresprogramm = $databaseAdapter->getInstance()
             ->prepare('SELECT * FROM tl_rsz_jahresprogramm WHERE start_date > ? ORDER BY start_date, id')
             ->limit(4)
@@ -129,7 +129,7 @@ class JahresprogrammListingController extends AbstractFrontendModuleController
         ;
 
         while ($objJahresprogramm->next()) {
-            $arrNextEvent[] = [
+            $upcomingEvents[] = [
                 'id' => $objJahresprogramm->id,
                 'kw' => $objJahresprogramm->kw,
                 'start_date' => date('Y-m-d', (int) $objJahresprogramm->start_date),
@@ -139,12 +139,12 @@ class JahresprogrammListingController extends AbstractFrontendModuleController
                 'kommentar' => $objJahresprogramm->kommentar,
                 'ort' => $stringUtilAdapter->substr($objJahresprogramm->ort, 40),
                 'trainer' => $stringUtilAdapter->substr($objJahresprogramm->trainer, 10),
-                'autoSignIn' => $objJahresprogramm->autoSignIn,
-                'signInStop' => $objJahresprogramm->autoSignIn ? date('Y-m-d', (int) $objJahresprogramm->registrationStop) : '',
-                'jumpTo' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
+                'auto_sign_in' => $objJahresprogramm->autoSignIn,
+                'sign_in_stop' => $objJahresprogramm->autoSignIn ? date('Y-m-d', (int) $objJahresprogramm->registrationStop) : '',
+                'jump_to' => $objJumpTo ? $objJumpTo->getFrontendUrl('/'.$objJahresprogramm->id) : '',
             ];
         }
-        $template->set('arrNextEvent', $arrNextEvent);
+        $template->set('upcoming_events', $upcomingEvents);
 
         return $template->getResponse();
     }

@@ -31,8 +31,8 @@ use League\Csv\Writer;
 use Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel;
 use Markocupic\RszJahresprogrammBundle\Security\RszBackendPermissions;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
 
 class RszJahresprogramm extends Backend
 {
@@ -46,7 +46,7 @@ class RszJahresprogramm extends Backend
     }
 
     #[AsCallback(table: 'tl_rsz_jahresprogramm', target: 'config.ondelete', priority: 255)]
-    public function delPraesenzkontrolle(DataContainer $dc): void
+    public function deletePraesenzkontrolle(DataContainer $dc): void
     {
         $rows = $this->connection->fetchAllAssociative('SELECT id FROM tl_rsz_praesenzkontrolle WHERE pid = ?', [$dc->id]);
 

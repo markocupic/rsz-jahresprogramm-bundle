@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Markocupic\RszJahresprogrammBundle\Controller\FrontendModule;
 
-use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -31,40 +31,39 @@ use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\Template;
 use Contao\UserModel;
 use Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammModel;
 use Markocupic\RszJahresprogrammBundle\Model\RszJahresprogrammParticipantModel;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Security;
 
 #[AsFrontendModule(JahresprogrammReaderController::TYPE, category: 'rsz_frontend_modules')]
 class JahresprogrammReaderController extends AbstractFrontendModuleController
 {
     public const TYPE = 'jahresprogramm_reader';
 
-    private ?FrontendUser $objUser = null;
-    private ?RszJahresprogrammModel $objEvent = null;
+    private MemberModel|null $user = null;
+    private RszJahresprogrammModel|null $event = null;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Security $security,
         private readonly ScopeMatcher $scopeMatcher,
+        private readonly ContaoCsrfTokenManager $csrfTokenManager,
     ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         $inputAdapter = $this->framework->getAdapter(Input::class);
-        $configAdapter = $this->framework->getAdapter(Config::class);
         $environmentAdapter = $this->framework->getAdapter(Environment::class);
 
         // Get logged in frontend user
         $user = $this->security->getUser();
 
         if ($user instanceof FrontendUser) {
-            $this->objUser = $user;
+            $this->user = MemberModel::findByPk($user->id);
         }
 
         if ($this->scopeMatcher->isFrontendRequest($request)) {
@@ -74,14 +73,13 @@ class JahresprogrammReaderController extends AbstractFrontendModuleController
             $page->cache = 0;
 
             // Set the item from the auto_item parameter
-            if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item'])) {
-                $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
-            }
+            // Set the item from the auto_item parameter and remove auto_item from unused route parameters
+            if (isset($_GET['auto_item']) && '' !== $_GET['auto_item']) {
+                $inputAdapter->setGet('auto_item', $_GET['auto_item']);
 
-            if ('' !== $inputAdapter->get('events')) {
-                $this->objEvent = RszJahresprogrammModel::findByPk($inputAdapter->get('events'));
+                $this->event = RszJahresprogrammModel::findByPk($inputAdapter->get('auto_item'));
 
-                if (null !== $this->objEvent) {
+                if (null !== $this->event) {
                     $blnShow = true;
                     $page->noSearch = 0;
                     $page->cache = 1;
@@ -105,38 +103,40 @@ class JahresprogrammReaderController extends AbstractFrontendModuleController
 
         $userIsNotAllowedToSignIn = false;
 
-        if (null !== $this->objEvent) {
-            if ($this->objUser && $this->objEvent->autoSignIn) {
-                $template->set('User', MemberModel::findByPk($this->objUser));
-                $objBackendUser = UserModel::findByUsername($this->objUser->username);
+        if (null !== $this->event) {
+            if (null !== $this->user && $this->event->autoSignIn) {
+                $template->set('user', $this->user->row());
+                $objBackendUser = UserModel::findByUsername($this->user->username);
 
                 // Handle form input for event subscription
-                if (null !== $this->objUser && 'tl_rsz_jahresprogramm_participant' === $inputAdapter->post('FORM_SUBMIT')) {
+                if ('tl_rsz_jahresprogramm_participant' === $inputAdapter->post('FORM_SUBMIT')) {
                     $objDb = $databaseAdapter->getInstance()
-                        ->prepare('SELECT * FROM tl_rsz_jahresprogramm_participant WHERE pid=? AND uniquePid=?')
-                        ->execute($this->objUser->id, $this->objEvent->uniqueId)
+                        ->prepare('SELECT * FROM tl_rsz_jahresprogramm_participant WHERE pid = ? AND uniquePid = ?')
+                        ->execute($this->user->id, $this->event->uniqueId)
                     ;
 
                     if ($objDb->numRows) {
-                        $objParticipant = RszJahresprogrammParticipantModel::findByPk($objDb->id);
+                        $objRegistration = RszJahresprogrammParticipantModel::findByPk($objDb->id);
                     } else {
-                        $objParticipant = new RszJahresprogrammParticipantModel();
-                        $objParticipant->addedOn = time();
+                        $objRegistration = new RszJahresprogrammParticipantModel();
+                        $objRegistration->addedOn = time();
                     }
-                    $objParticipant->uniquePid = $this->objEvent->uniqueId;
-                    $objParticipant->pid = $this->objUser->id;
-                    $objParticipant->tstamp = time();
-                    $objParticipant->signOffReason = $inputAdapter->post('signOffReason');
-                    $objParticipant->signedIn = '';
-                    $objParticipant->signedOff = '';
+
+                    $objRegistration->uniquePid = $this->event->uniqueId;
+                    $objRegistration->pid = $this->user->id;
+                    $objRegistration->tstamp = time();
+                    $objRegistration->signOffReason = $inputAdapter->post('signOffReason');
+                    $objRegistration->signedIn = '';
+                    $objRegistration->signedOff = '';
 
                     if ('true' === $inputAdapter->post('signIn')) {
-                        $objParticipant->signedIn = '1';
+                        $objRegistration->signedIn = '1';
                     } else {
-                        $objParticipant->signedOff = '1';
+                        $objRegistration->signedOff = '1';
                     }
-                    $objParticipant->tstamp = time();
-                    $objParticipant->save();
+
+                    $objRegistration->tstamp = time();
+                    $objRegistration->save();
                     $controllerAdapter->reload();
                 }
 
@@ -145,42 +145,44 @@ class JahresprogrammReaderController extends AbstractFrontendModuleController
                 $arrFunktion = $stringUtilAdapter->deserialize($objBackendUser->funktion, true);
 
                 if (\in_array('Athlet', $arrFunktion, true)) {
-                    if ($this->objEvent->autoSignIn) {
-                        $arrKategories = $stringUtilAdapter->deserialize($this->objEvent->autoSignInKategories, true);
+                    if ($this->event->autoSignIn) {
+                        $arrKategories = $stringUtilAdapter->deserialize($this->event->autoSignInKategories, true);
 
                         if (\in_array($objBackendUser->kategorie, $arrKategories, true)) {
                             $blnUserIsAutoSignedIn = true;
+                            $template->set('request_uri', Environment::get('requestUri'));
+                            $template->set('request_token', $this->csrfTokenManager->getDefaultTokenValue());
                         }
                     }
                 }
 
-                $objParticipant = $databaseAdapter->getInstance()
+                $objRegistration = $databaseAdapter->getInstance()
                     ->prepare('SELECT * FROM tl_rsz_jahresprogramm_participant WHERE pid=? AND uniquePid=?')
-                    ->execute($this->objUser->id, $this->objEvent->uniqueId)
+                    ->execute($this->user->id, $this->event->uniqueId)
                 ;
 
-                if ($objParticipant->numRows) {
-                    $arrParticipant = $objParticipant->row();
-                    $template->set('formData',$arrParticipant);
+                if ($objRegistration->numRows) {
+                    $registration = $objRegistration->row();
+                    $template->set('form_data', $registration);
 
-                    if ('1' === $arrParticipant['signedIn']) {
-                        $template->set('signInText', 'Super, du hast dich für diesen Anlass angemeldet.'.('' !== $objParticipant->signOffReason ? '{{br}}{{br}}<strong>Mitteilung:</strong>{{br}}'.$objParticipant->signOffReason : ''));
-                        $template->set('alertClass','success');
-                        $template->set('formButtonText', 'Abmelden');
-                    } elseif ('1' === $arrParticipant['signedOff']) {
-                        $template->set('signInText','Du hast dich für diesen Anlass abgemeldet.'.('' !== $objParticipant->signOffReason ? '{{br}}{{br}}<strong>Grund:</strong>{{br}}'.$objParticipant->signOffReason : ''));
-                        $template->set('alertClass','danger');
-                        $template->set('formButtonText', 'Anmelden');
+                    if ('1' === $registration['signedIn']) {
+                        $template->set('sign_in_text', 'Super, du hast dich für diesen Anlass angemeldet.'.('' !== $objRegistration->signOffReason ? '<br><br><strong>Mitteilung:</strong><br>'.$objRegistration->signOffReason : ''));
+                        $template->set('alert_class', 'success');
+                        $template->set('form_button_text', 'Abmelden');
+                    } elseif ('1' === $registration['signedOff']) {
+                        $template->set('sign_in_text', 'Du hast dich für diesen Anlass abgemeldet.'.('' !== $objRegistration->signOffReason ? '<br><br><strong>Grund:</strong><br>'.$objRegistration->signOffReason : ''));
+                        $template->set('alert_class', 'danger');
+                        $template->set('form_button_text', 'Anmelden');
                     }
                 } elseif ($blnUserIsAutoSignedIn) {
-                    $template->set('signInText', 'Du bist für diesen Anlass automatisch angemeldet.');
-                    $template->set('alertClass', 'success');
-                    $template->set('formButtonText', 'Abmelden');
-                } elseif (!$this->objEvent->autoSignIn) {
-                    $template->set('formData', null);
-                    $template->set('signInText', 'Du hast dich für diesen Anlass noch nicht angemeldet.');
-                    $template->set('alertClass', 'info');
-                    $template->set('formButtonText', 'Anmelden');
+                    $template->set('sign_in_text', 'Du bist für diesen Anlass automatisch angemeldet.');
+                    $template->set('alert_class', 'success');
+                    $template->set('form_button_text', 'Abmelden');
+                } elseif (!$this->event->autoSignIn) {
+                    $template->set('form_data', null);
+                    $template->set('sign_in_text', 'Du hast dich für diesen Anlass noch nicht angemeldet.');
+                    $template->set('alert_class', 'info');
+                    $template->set('form_button_text', 'Anmelden');
                 } else {
                     $userIsNotAllowedToSignIn = true;
                 }
@@ -188,26 +190,26 @@ class JahresprogrammReaderController extends AbstractFrontendModuleController
         }
 
         $arrJahresprogramm = [
-            'id' => $this->objEvent->id,
-            'kw' => $this->objEvent->kw,
-            'start_date' => Date::parse('Y-m-d', (int) $this->objEvent->start_date),
-            'end_date' => Date::parse('Y-m-d', (int) $this->objEvent->end_date),
-            'art' => $this->objEvent->art,
-            'teilnehmer' => implode(', ', StringUtil::deserialize($this->objEvent->teilnehmer, true)),
-            'kommentar' => $this->objEvent->kommentar,
-            'ort' => $this->objEvent->ort,
-            'trainer' => $this->objEvent->trainer,
-            'autoSignIn' => $this->objEvent->autoSignIn,
+            'id' => $this->event->id,
+            'kw' => $this->event->kw,
+            'start_date' => Date::parse('Y-m-d', (int) $this->event->start_date),
+            'end_date' => Date::parse('Y-m-d', (int) $this->event->end_date),
+            'art' => $this->event->art,
+            'teilnehmer' => implode(', ', StringUtil::deserialize($this->event->teilnehmer, true)),
+            'kommentar' => $this->event->kommentar,
+            'ort' => $this->event->ort,
+            'trainer' => $this->event->trainer,
+            'autoSignIn' => $this->event->autoSignIn,
         ];
 
-        $template->set('displayForm', $this->objUser && $this->objEvent->autoSignIn ? true : false);
+        $template->set('display_form', $this->user && $this->event->autoSignIn ? true : false);
 
         if ($userIsNotAllowedToSignIn) {
             $template->set('displayForm', false);
         }
 
-        $template->set('blnSignInPerionHasExpired', $this->objEvent->registrationStop < time() ? true : false);
-        $template->set('Jahresprogramm', $arrJahresprogramm);
+        $template->set('bln_sign_in_period_expired', $this->event->registrationStop < time() ? true : false);
+        $template->set('event', $arrJahresprogramm);
 
         return $template->getResponse();
     }
