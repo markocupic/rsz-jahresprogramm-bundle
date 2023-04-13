@@ -22,7 +22,7 @@
         "source": "https://github.com/markocupic/rsz-jahresprogramm-bundle"
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "contao/core-bundle": "^5.0",
         "markocupic/export_table": "^5.0",
         "markocupic/rsz-benutzerverwaltung-bundle": "dev-master",
