@@ -23,13 +23,12 @@ use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\Template;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(JahresprogrammListingModuleController::TYPE, category:'rsz_frontend_modules')]
+#[AsFrontendModule(JahresprogrammListingController::TYPE, category:'rsz_frontend_modules')]
 class JahresprogrammListingController extends AbstractFrontendModuleController
 {
     public const TYPE = 'jahresprogramm_listing';
