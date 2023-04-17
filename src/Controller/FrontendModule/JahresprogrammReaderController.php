@@ -72,10 +72,7 @@ class JahresprogrammReaderController extends AbstractFrontendModuleController
             $page->noSearch = 1;
             $page->cache = 0;
 
-            // Set the item from the auto_item parameter
-            // Set the item from the auto_item parameter and remove auto_item from unused route parameters
-            if (isset($_GET['auto_item']) && '' !== $_GET['auto_item']) {
-                $inputAdapter->setGet('auto_item', $_GET['auto_item']);
+
 
                 $this->event = RszJahresprogrammModel::findByPk($inputAdapter->get('auto_item'));
 
@@ -84,7 +81,7 @@ class JahresprogrammReaderController extends AbstractFrontendModuleController
                     $page->noSearch = 0;
                     $page->cache = 1;
                 }
-            }
+
 
             if (!$blnShow) {
                 throw new PageNotFoundException('Page not found: '.$environmentAdapter->get('uri'));
